@@ -1,0 +1,16 @@
+self-test: Kronecker routines agree with the definitions on random data
+1d STEPS2026 sha256 ok: True; 600 cells
+   binary64 R = 1.4602172840228739852488...  <= 1.460217284022874: True, equals page fraction: True
+   decimal  R = 1.4602172840228739750723...  <= 1.460217284022874: True
+1d AER2026   sha256 ok: True; 600 cells
+   binary64 R = 1.4599890469053832431503...  <= 1.459989046905384: True
+   decimal  R = 1.4599890469053831449525...  <= 1.459989046905384: True
+1d CERT2026  sha256 ok: True; 300 cells
+   binary64 R = 1.4630715826075593274614...  <= 1.4630715826075594: True, equals page fraction: True
+            vs the starred print 1.463071582607559: R <= it is False (R - it = 3.275e-16)
+   decimal  R = 1.4630715826075592996311...  <= 1.4630715826075594: True
+            vs the starred print 1.463071582607559: R <= it is False (R - it = 2.996e-16)
+1c Kos2026  sha256 ok: True; K=24576 n=24592 trailing zeros 8; L = 0.4103333527484933395347... argmin [21264]; >= 0.4103333: True; equals page fraction: True
+   mass in [1/6144, 2/6144): 0.2208; support [0, 3073/3072)
+1c R2026    sha256 ok: True; K=6144 n=6148 trailing zeros 1; L = 0.4103287175491874144926... argmin [4665]; >= 0.4103287: True; equals page fraction: True
+RESULT: ALL CHECKS PASSED

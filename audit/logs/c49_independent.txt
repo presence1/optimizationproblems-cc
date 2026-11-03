@@ -1,0 +1,43 @@
+== Part 1: the XOR-gluing lemma
+  bucket search and zeta Sperner agree with brute force on 300 random families
+  good families on 1 points: 2
+  good families on 2 points: 5
+  good families on 3 points: 18
+  good families on 4 points: 129
+  exhaustive: 338724 gluings (all ordered pairs of good families on <= 4 points, all ports): injectivity failures 0, goodness failures 0  [1s]
+  good families on 1 points: 2; (family, port) classes up to relabelling: 2
+  good families on 2 points: 5; (family, port) classes up to relabelling: 5
+  good families on 3 points: 18; (family, port) classes up to relabelling: 13
+  good families on 4 points: 129; (family, port) classes up to relabelling: 42
+  good families on 5 points: 3222; (family, port) classes up to relabelling: 266
+  deep: 90151 gluings of (family, port) classes on <= 5 points: injectivity failures 0, goodness failures 0  [2s]
+  random: 400 gluings of good families on 4..7 points (uniform and non-uniform): failures 0
+  (a) without Sperner the lemma fails, e.g. F1=[0, 1] F2=[0, 1] ports x=0 y=0 (list size 2, distinct 1)
+  (b) same-status rule with the merged point dropped fails, e.g. F1=[1, 2] F2=[1, 2] x=0 y=0
+== Part 2: F and H rebuilt from the page text
+  F: 75 sets, kinds {'star': 5, 'K23': 10, 'chaircomp': 60}; H: 121 sets, squares [1, 3, 4, 5, 9], orbit sizes [55, 55, 11]
+  F: Sperner True, sunflower none, port counts (N00,N01,N10,N11) over all ordered pairs [(11, 20, 20, 24)]
+  H: Sperner True, sunflower none, port counts (N00,N01,N10,N11) over all ordered pairs [(15, 31, 31, 44)]
+  (info) link of 0 in H has 75 sets
+== Part 3: explicit XOR chains vs transfer-matrix counts
+  F-F                      2728 sets on 18 points (predicted 2728), distinct True, Sperner True, sunflower search (all pivots): none  [1s]
+  H-H                      6900 sets on 20 points (predicted 6900), distinct True, Sperner True, sunflower search (all pivots): none  [3s]
+  F-H                      4349 sets on 19 points (predicted 4349), distinct True, Sperner True, sunflower search (all pivots): none  [1s]
+  H-F                      4349 sets on 19 points (predicted 4349), distinct True, Sperner True, sunflower search (all pivots): none  [1s]
+  F-F-F (pivot sample)    98920 sets on 26 points (predicted 98920), distinct True, Sperner True, sunflower search (300 random pivots): none  [6s]
+== Part 4: the rows, decided exactly
+  row 79 gadget built explicitly: 250659 sets (distinct True), avoid/contain root 98308/152351; page 250659 = 98308 + 152351: True  [0s]
+  row 79 unit port counts [148811965456, 279351870092, 279351870092, 378843386627] equal page: True
+  row 80: B rebuilt = data B.txt: True; B' 4364 sets, distinct True, B subset of B': True, Sperner (zeta) True, sunflower (buckets, all pivots) none; ports (0,1) [622, 1127, 1127, 1488]  [1s]
+  v10.json sha256 c30a74fe... (page prefix None): 6127 sets on 20 points, distinct True, Sperner True, sunflower none, ports u=18 v=19 -> [1081, 1884, 1802, 1360]  [2s]
+  v11_s17.json sha256 c12d0dd6... (page prefix c12d0dd6): 6150 sets on 20 points, distinct True, Sperner True, sunflower none, ports u=18 v=19 -> [1080, 1802, 1908, 1360]  [2s]
+  v12.json sha256 7472112c... (page prefix 7472112c): 6341 sets on 20 points, distinct True, Sperner True, sunflower none, ports u=18 v=19 -> [1080, 1993, 1908, 1360]  [2s]
+  row 77 Cla2026                                         T=[[20, 11], [24, 20]] p=8: x^2-40x+136, rho~36.248077, claim 1.5664286 < rho^(1/p) exactly: True
+  row 78 Cla2026                                         T=[[1104, 641], [1624, 980]] p=17: x^2-2084x+40936, rho~2064.168284, claim 1.5666969 < rho^(1/p) exactly: True
+  row 79 Syl2026                                         T=[[279351870092, 148811965456], [378843386627, 279351870092]] p=60: x^2-558703740184x+21661038359926467731552, rho~516789080663.492310, claim 1.5675517 < rho^(1/p) exactly: True
+  row 80 Syl2026                                         T=[[1127, 622], [1488, 1127]] p=17: x^2-2254x+344593, rho~2089.047816, claim 1.5678015 < rho^(1/p) exactly: True
+  row 74 IRSI2026 v10.json                               T=[[1884, 1081], [1360, 1802]] p=18: x^2-3686x+1924808, rho~3056.194543, claim 1.5617847 < rho^(1/p) exactly: True
+  row 75 IRSI2026 v11_s17.json                           T=[[1802, 1080], [1360, 1908]] p=18: x^2-3710x+1969416, rho~3068.098924, claim 1.5621220 < rho^(1/p) exactly: True
+  row 76 IRSI2026 v12.json                               T=[[1993, 1080], [1360, 1908]] p=18: x^2-3901x+2333844, rho~3163.185553, claim 1.5647730 < rho^(1/p) exactly: True
+  row 81 Kos2026 (page counts only; family NOT checked)  T=[[64728, 33969], [88867, 64728]] p=26: x^2-129456x+1170990861, rho~119670.907850, claim 1.5678599 < rho^(1/p) exactly: True
+RESULT: ALL CHECKS PASSED

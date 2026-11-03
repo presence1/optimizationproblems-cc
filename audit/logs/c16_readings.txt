@@ -1,0 +1,50 @@
+beta = 2.58498175957925;  (beta + pi)/pi = 1.82282524967885
+  Kronecker check: Z(1+1.0e-8) - pi/1.0e-8 = 2.58498176323782
+  Kronecker check: Z(1+1.0e-12) - pi/1.0e-12 = 2.58498175957962
+  Z(0) = -1.0
+
+Certificate trial function (|k| <= 4000, mu = 0.1221), independent float64 sums:
+  S0 = 9.313582031186836  S1 = 6.294089927426437  S2 = 24.7296650594627  d = 3.929029509366
+  L_trial = 2.15622477064424  (verify/16a: 2.15622477064423579...; claim 2.1562247706)
+
+Direct lattice sums (|k| <= 3000, plus integral tail) vs the small-mu expansion:
+  mu       S0 direct        S0 expansion     S2 direct        d(mu)        F(d(mu))    
+  0.1221   9.3135836393     9.3135837538     24.729678        3.929032     2.156225528 
+    (the untruncated extremal at mu = 0.1221; the certificate's truncated one gives 2.15622477064)
+  0.05     12.0463522623    12.0463522623    61.831853        6.904915     2.150310642 
+  0.01     17.0625505842    17.0625505844    313.159265       22.479378    2.125420300 
+  0.003    20.8379427010    20.8379427016    1046.197551      59.109377    2.104546371 
+  0.001    24.2873349951    24.2873349968    3140.592652      148.514253   2.086493619 
+
+F along the exact extremal family for large d (expansion; exact up to o(mu^M)):
+  mu         d(mu)          F(d(mu))      
+  1e-3       148.514        2.086493619   
+  1e-4       1106.99        2.053846657   
+  1e-6       73322.7        2.007381792   
+  1e-8       5.4814e+6      1.977066082   
+  1e-12      3.64248e+10    1.940220359   
+  1e-20      2.17986e+18    1.904096487   
+  1e-40      1.08783e+38    1.870756546   
+  1e-100     4.34629e+97    1.845865853   
+  1e-1000    4.34328e+996   1.826114811   
+  limit (beta + pi)/pi = 1.82282524968
+
+Shape of F(d) along the family (direct sums, |k| <= 1500 + tail; numerical):
+  d = 1.4134     F = 2.044668918   (mu = 3.162)
+  d = 1.5321     F = 2.075605436   (mu = 1.585)
+  d = 1.7639     F = 2.110562245   (mu = 0.7943)
+  d = 2.2036     F = 2.138940120   (mu = 0.3981)
+  d = 3.0056     F = 2.153629030   (mu = 0.1995)
+  d = 4.4227     F = 2.155867244   (mu = 0.1)
+  d = 6.8938     F = 2.150338218   (mu = 0.05012)
+  d = 11.2100    F = 2.140777153   (mu = 0.02512)
+  d = 18.8110    F = 2.129391998   (mu = 0.01259)
+  d = 32.3291    F = 2.117395641   (mu = 0.00631)
+  d = 56.6014    F = 2.105444634   (mu = 0.003162)
+  d = 100.5632   F = 2.093887896   (mu = 0.001585)
+  max of F over the family (untruncated extremal, numerical): F = 2.156225528 at d* = 3.9288 (mu = 0.12211)
+  compare: page upper bound 2.1562256466*, BDZ2013 numerical 2.15627 at d* = 3.92888, certificate trial (truncated) 2.15622477064
+  reading (b') with threshold d0 = 5  : sup over the grid of F(d), d >= d0: 2.154667
+  reading (b') with threshold d0 = 10 : sup over the grid of F(d), d >= d0: 2.140777
+  reading (b') with threshold d0 = 100: sup over the grid of F(d), d >= d0: 2.093888
+RESULT: ALL CHECKS PASSED
