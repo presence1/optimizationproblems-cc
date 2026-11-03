@@ -1,7 +1,8 @@
 # Audit of the `verify/*` branches (C_1d, C_1c, C_70, C_16, C_49)
 
-Audit date: 3 November 2026. Auditor: an AI agent (Claude, Anthropic), working
-for the owner of this fork. **This is not a human review**, so the same caution
+Audit date: 3 November 2026. §3.4 was updated the same day, after the fork owner
+supplied the 16a source paper [BDZ2013]. Auditor: an AI agent (Claude, Anthropic),
+working for the owner of this fork. **This is not a human review**, so the same caution
 applies to it as to the work it audits.
 
 The `verify/*` branches were not modified. Everything here is in this file and in
@@ -46,7 +47,7 @@ the branches supports the figure 15.
 | 1d, CERT2026 (starred duplicate) | C_1d ≤ 1.463071582607559* | **Problem, already known.** The certificate does not imply this value: its exact R is 3.3·10⁻¹⁶ higher (3.0·10⁻¹⁶ under the decimal reading). The page and upstream already record this, and the branch says so correctly. |
 | 1c, Kos2026 | C_1c ≥ 0.4103333* | **Stands.** |
 | 70a, Pin2026 | C_70 ≥ 1.20194336* | **Stands with caveats**: (a) it depends on Patankar's cube–ball criterion. I re-derived the criterion (§3.3) and tested it numerically; it rests on Steiner's formula and the parallelotope intrinsic-volume formula, both textbook. (b) No human has reviewed the argument. (c) The finite certificate does not certify the limit exp(1/(2e)). The page keeps the two apart, as it should. |
-| 16a, lower bound | L ≥ 2.1562247706* | **Stands with caveats**: it holds under the reading "the inequality for every zero-mean u". That reading is the page's "equivalently" formula, and every number on the page uses it. Under the literal first sentence ("…with sufficiently large frequency ratio"), the constant would be (β+π)/π ≈ 1.82283 and **the bound would be false**. The branch says only that it would "say nothing" (§3.4). The page's first sentence should be fixed. |
+| 16a, lower bound | L ≥ 2.1562247706* | **Stands, with one caveat about the page's wording.** The bound holds for the constant as the source defines it: [BDZ2013] Theorem 3.8 takes the inequality for every zero-mean u, with L = max over δ ≥ 1, which is the page's "equivalently" formula. The page's first sentence adds "…with sufficiently large frequency ratio". That phrase is not in the source, and read literally it defines a different constant, whose infimum is (β+π)/π ≈ 1.82283 (the paper's L_∞). **For that constant the bound would be false.** The branch says only that it would "say nothing" (§3.4). The page's first sentence should be fixed. |
 | 49a, rows 74–80 | 1.5617847*, 1.5621220*, 1.5647730*, 1.5664286*, 1.5666969*, 1.5675517*, 1.5678015* | **Stand with caveats**: (a) they depend on the XOR-gluing lemma. I give a clean proof and found no counterexample in an exhaustive search (§3.5). (b) Nobody here checked the lemma against [DEGKM1997]. (c) Row 79's 62-point family is far too large to enumerate, so its goodness rests on the lemma alone. (d) The page records no hash for IRSI v1.0. (e) Some page cross-checks in the checkers are printed but not enforced (§4). |
 
 Rows that the branches marked "not checked" are still not checked: 1d SCIEL2026
@@ -235,8 +236,9 @@ inequality "for all zero-mean u ∈ H²(𝕋²) with sufficiently large frequenc
   invariance (sup|u| equals |u(0)| for a suitable translate). This gives exactly
   L_a = sup_{δ≥1} F(δ), the "equivalently" formula. Under (a) the two sentences
   agree.
-- **(b) Only u with δ(u) ≥ δ₀, for δ₀ as large as one likes.** Then
-  L_b = limsup_{δ→∞} F(δ). This is a different constant.
+- **(b) Only u with δ(u) ≥ δ₀, for δ₀ as large as one likes.** Then L is
+  admissible exactly when F(δ) ≤ L for all large δ, so the best constant is
+  governed by limsup_{δ→∞} F(δ). This is a different constant.
 
 **The exact extremals.** For μ > 0 put c_k = 1/(|k|²(1 + μ|k|²)) for every k ≠ 0,
 and let S₀ = Σc_k, S₁ = Σ|k|²c_k², S₂ = Σ|k|⁴c_k².
@@ -279,20 +281,72 @@ Conclusions:
     the page's bracket, below the upper bound 2.1562256466*.
   - It also agrees with the value in pending upstream PR [#319](https://github.com/teorth/optimizationproblems/pull/319). BDZ2013's 2.15627
     lies above it, as the page itself notes.
-- **Under reading (b)** L_b = (β+π)/π ≈ 1.82283, which is the page's own [BDZ2013]
-  lower bound. Then 2.1562247706*, and Pat2026's 2.156224, would be false.
+- **Under reading (b)** every L > (β+π)/π ≈ 1.82283 is admissible. L = (β+π)/π
+  itself is not, because F stays strictly above its limit, as BDZ show in the
+  proof of their Theorem 3.8. So
+  there is no smallest constant, and the infimum is (β+π)/π, which is the page's
+  own [BDZ2013] lower bound. Then 2.1562247706*, and Pat2026's 2.156224, would
+  be false.
   - Even with a fixed threshold δ₀ = 5, the supremum of F over δ ≥ δ₀ is
     numerically about 2.1547, below the claim.
   - The branch's README says that under the literal reading the trial function
     "would then say nothing". That understates it: under that reading the bound
     is false.
 - The page's tables, the upper-bound certificate's branch-and-bound over
-  δ ∈ [1, ∞), and BDZ2013's maximiser δ* ≈ 3.93 all presuppose reading (a). So (a)
-  is plainly the intended reading, and the bound stands under it. **The first
-  sentence of the page should drop "with sufficiently large frequency ratio".**
-  It could say "for all zero-mean u ≠ 0 (every such u has δ(u) ≥ 1)" instead.
-- I could not consult BDZ2013 itself: arxiv.org is outside this session's network
-  allowance. So I do not claim to know how that paper words the condition.
+  δ ∈ [1, ∞), and BDZ2013's maximiser δ* ≈ 3.93 all presuppose reading (a). The
+  source paper defines the constant that way too (below). So the bound stands for
+  the constant as defined. **The first sentence of the page should drop "with
+  sufficiently large frequency ratio".** It could say "for all zero-mean u ≠ 0
+  (every such u has δ(u) ≥ 1)" instead.
+
+**What the source paper says.** The fork owner supplied [BDZ2013] as arXiv
+1012.2061v1 (9 December 2010). I have not seen the 2013 journal version, whose
+wording or numbers could differ.
+
+- **The definition.** Theorem 3.8 states inequality (3.19) "for all 2π × 2π-periodic
+  functions u with zero mean". It defines the constant by
+  (3.20) L := max_{δ≥1} {4πΘ(δ) − (log δ + log(1 + log δ))}. That is reading (a),
+  and the same formula as the page's "equivalently" definition.
+  - The theorem adds that the maximum is attained at a finite δ*, and that the
+    extremal u_{μ(δ*)} is exact.
+  - Its proof shows L > (β+π)/π ≈ 1.82283.
+  - Neither Theorem 3.8 nor the introduction's statement of the inequality,
+    (1.9), restricts it to large δ. The phrase "with sufficiently large frequency
+    ratio" is the page's own addition. I read §§1–4 and the Appendix; §§5–6 treat
+    the separate algebraic case.
+- **(β+π)/π is the paper's L_∞,** the limit as δ → ∞ (p. 4: "L ≥ L_∞ := (β+π)/π
+  … the numerics shows that L ≥ L_opt > L_∞"). This is precisely the constant
+  that reading (b) would produce.
+- **The rest of the set-up is the same as above.**
+  - Θ (2.3) is defined as on the page.
+  - The extremals (1.11)/(2.9) and the parametric formula (2.11) are the family
+    I used.
+  - The expansions (1.14), (3.7) and (3.8) are mine, with the exponentially small
+    terms (of order e^{−2π/√μ}) written out.
+  - β is the same constant (Appendix, (7.6)).
+- **The numbers.** The paper reports, as numerical results (p. 13), δ* ∼ 3.92888,
+  μ ≈ 0.12211 and L ∼ 2.15627. I evaluated its own exponentially convergent
+  Bessel-series form of the lattice sums (Lemma 3.1, Remark 3.6) at 30 digits and
+  maximised F:
+  - **L = 2.15622552815 at δ* = 3.92884, μ* = 0.12211.** δ* and μ agree with the
+    paper, but its printed L is 4.45·10⁻⁵ too high.
+  - The paper's own table of Θ (p. 4) matches my evaluation to every printed
+    digit at δ = 2 and δ = 4: 0.26651 and 0.35112, and Θ₀ = 0.26660 and 0.35112.
+    So the table is consistent with L ≈ 2.1562255 and not with 2.15627.
+  - The page already notes that the paper's value "lies above the certified upper
+    bound". The recomputed L lies inside the page's bracket
+    [2.1562247706*, 2.1562256466*], about 1.2·10⁻⁷ below the upper bound. It also
+    matches the 2.156225528* of pending PR [#319](https://github.com/teorth/optimizationproblems/pull/319).
+  - This maximisation is high-precision numerics, not an interval computation.
+- **Minor slips in the paper,** none affecting the page:
+  - Remark 3.6 prints the coefficient of the K₀ series for f as 8π. 2π is what
+    integrating the h-series gives; it matches (3.7) and reproduces the direct
+    lattice sum (8π would shift S₀ by 3.4·10⁻⁷ at μ = 0.1221).
+  - Θ(1) is printed as 0.10134; exactly, it is 1/π² = 0.101321.
+  - Lemma 3.1 reads "as μ → ∞" where μ → 0 is meant.
+  - Theorem 2.3 says "δ > 0" where δ ≥ 1 is needed (Lemma 2.1).
+  - The comparison Θ ≤ Θ₀ (1.15) is verified only numerically, as Remark 3.5
+    says.
 
 ### 3.5 C_49: the XOR-gluing lemma
 
@@ -453,7 +507,7 @@ pages", which I recounted from the pages exactly. Also verified:
 
 | # | Where | Statement | Problem | Severity |
 | --- | --- | --- | --- | --- |
-| 1 | 16a README; `VERIFY_LOG.md` | "a trial function with δ ≈ 3.93 would then say nothing"; "The only discrepancy found is the stale duplicate row on the 1d page" | Understated. Under the literal first sentence the bound is false, because the constant would be (β+π)/π ≈ 1.82283 (§3.4). The log's summary also leaves out the 16a definitional inconsistency that the README itself raises | moderate |
+| 1 | 16a README; `VERIFY_LOG.md` | "a trial function with δ ≈ 3.93 would then say nothing"; "The only discrepancy found is the stale duplicate row on the 1d page" | Understated. Under the literal first sentence the bound is false, because the best constant would then be (β+π)/π ≈ 1.82283, the source's L_∞ (§3.4). The source's Theorem 3.8 confirms the reading the branch used. The log's summary also leaves out the 16a definitional inconsistency that the README itself raises | moderate |
 | 2 | 1d README; `VERIFY_LOG.md` | the starred CERT2026 row "looks like a superseded copy … left behind by a merge" / "a leftover from a merge" | Incomplete. Upstream, [#232](https://github.com/teorth/optimizationproblems/pull/232) and [#243](https://github.com/teorth/optimizationproblems/pull/243) were merged minutes after the maintainer posted a hold on asterisk removals. The replayer then asked on [#243](https://github.com/teorth/optimizationproblems/pull/243) which row should go ("if the hold stands, the unstarred row should go"), and no answer is visible. The arithmetic statements are right, but which row survives is a maintainer decision still pending | moderate |
 | 3 | task statement | "15 bounds confirmed" | The documents claim 13 confirmations, 12 of them asterisked (§1) | minor |
 | 4 | `VERIFY_LOG.md` | "the seven smaller certificates were all finite exhaustive checks" | Row 79's 62-point unit (1,086,359,092,267 ≈ 1.1·10¹² sets) is not checked exhaustively. Its goodness comes from the lemma, which the README itself says correctly | minor |
@@ -570,6 +624,9 @@ Since then:
      reading of the definition; 49a: the gluing lemma).
    - Do not touch the asterisks.
 5. **Raise the 16a definition separately**, as a one-line Markdown fix or an issue.
+   Cite [BDZ2013] Theorem 3.8, which states the inequality for all zero-mean u with
+   L = max over δ ≥ 1. The same note could add that the paper's printed L ∼ 2.15627
+   is about 4.5·10⁻⁵ above what its own formulas give (§3.4).
    On the 1d duplicate row, point to the existing [#243](https://github.com/teorth/optimizationproblems/pull/243) thread rather than editing
    the rows unilaterally.
 6. **Mind the pending PRs.**
@@ -606,13 +663,17 @@ The 12 are:
 **What needs a caveat.**
 
 - **16a.** The page defines its constant in two slightly different ways. The
-  bound is right under the definition the page's own numbers use. Under a literal
-  reading of its first sentence, it would be wrong. The page should be fixed.
+  bound is right under the definition used by the 2013 source paper, which is also
+  the one the page's own numbers use. The page's first sentence adds a condition
+  that is not in the paper. Read literally, that condition makes the bound wrong,
+  so the sentence should be fixed. The paper's own printed value 2.15627 is
+  slightly too high; recomputing it from the paper's formulas gives 2.1562255,
+  which fits the page's bounds.
 - **70a and 49a** each rely on a short mathematical argument. I wrote both proofs
   out and stress-tested them, but no human mathematician has checked them.
 - **The original sources.** Nobody here has read the 1997 paper that the 49a page
-  cites for the gluing step. The 2013 paper behind 16a could not be reached from
-  this session (arXiv is blocked here).
+  cites for the gluing step. For 16a, I read the arXiv version of the 2013 paper,
+  supplied by you, but not the journal version.
 
 **What is not safe to say.**
 
@@ -638,10 +699,10 @@ commit. Send upstream only Markdown changes:
 | File | Purpose |
 | --- | --- |
 | `fetch_all.sh ROOT` | Clones the five branches and fetches all certificate data, pinned by commit, into ROOT. Checks 12 SHA-256 values |
-| `run_all.sh ROOT [OUT]` | Re-runs every documented command of the five branches, then all the checks below. About 12 minutes on 4 cores |
+| `run_all.sh ROOT [OUT]` | Re-runs every documented command of the five branches, then all the checks below. About 14 minutes on 4 cores |
 | `c1_independent.py` | C_1d and C_1c recomputed by Kronecker substitution, with a text parser for the AER `.py` file |
 | `c70_independent.py` | Steiner and parallelotope formula tests (Monte Carlo); the exact Szász/AM–GM test; a standard-library `decimal`+Robbins enclosure of R; the side statements on the page |
-| `c16_readings.py` | Both readings of the 16a definition: the exact extremal family, the Kronecker constant, F(δ) → (β+π)/π, the untruncated maximum, and an independent value of the trial function |
+| `c16_readings.py` | Both readings of the 16a definition: the exact extremal family, the Kronecker constant, F(δ) → (β+π)/π, the untruncated maximum, and an independent value of the trial function. Also the comparison with [BDZ2013]: its Bessel-series formulas, the maximum L, and its Θ table |
 | `c49_independent.py` | The gluing lemma tested exhaustively (≤ 4 points) and by classes (≤ 5 points); necessity demonstrations; explicit chains; F and H rebuilt; kernel-bucket and zeta checks of B′ and IRSI; exact bound decisions |
 | `mutation_tests.py` | The 38 mutation tests of §4 |
 | `logs/` | The outputs of the runs cited in this document, and the environment they ran in |

@@ -47,4 +47,15 @@ Shape of F(d) along the family (direct sums, |k| <= 1500 + tail; numerical):
   reading (b') with threshold d0 = 5  : sup over the grid of F(d), d >= d0: 2.154667
   reading (b') with threshold d0 = 10 : sup over the grid of F(d), d >= d0: 2.140777
   reading (b') with threshold d0 = 100: sup over the grid of F(d), d >= d0: 2.093888
+
+Comparison with [BDZ2013], arXiv:1012.2061v1 (lattice sums by Poisson/Bessel series):
+  mu = 0.1221: S0 direct 9.3135836393 | series with 2 pi: 9.3135836393 | with 8 pi (as printed in Remark 3.6): 9.3135832957
+               S2 direct 24.7296782 | series: 24.72967823
+  L = max F = 2.15622552815421 at d* = 3.9288362, mu* = 0.12211047
+  BDZ (p. 13): L ~ 2.15627 at d* ~ 3.92888 (mu ~ 0.12211).  Difference in L: 4.45e-5
+  page: certificate lower bound 2.1562247706 < L: True;  upper bound 2.1562256466 > L: True
+  Theta(d) and Theta_0(d) (BDZ p. 4 values in brackets):
+    d = 1: Theta = 1/pi^2 = 0.10132118 exactly (only |k| = 1 modes)  [BDZ 0.10134]
+    d = 2: Theta = 0.26651186 [BDZ 0.26651], Theta_0 = 0.2665993 [BDZ 0.26660], mu = 0.520545
+    d = 4: Theta = 0.35111591 [BDZ 0.35112], Theta_0 = 0.35111591 [BDZ 0.35112], mu = 0.118402
 RESULT: ALL CHECKS PASSED
