@@ -26,6 +26,7 @@ import os
 import sys
 import time
 
+sys.dont_write_bytecode = True  # do not leave __pycache__ next to the scripts
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # own helper module
 from check_c49_cla2026 import build_F, build_H, is_sperner  # noqa: E402
 

@@ -25,6 +25,7 @@ import time
 
 import numpy as np
 
+sys.dont_write_bytecode = True  # do not leave __pycache__ next to the scripts
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # own helper modules
 from check_c49_syl2026 import sunflower_free_exhaustive  # noqa: E402
 
