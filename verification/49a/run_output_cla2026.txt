@@ -1,0 +1,19 @@
+# python3 -I verification/49a/check_c49_cla2026.py --selftest && python3 -I verification/49a/check_c49_cla2026.py
+selftest: 327 random gluings of Sperner sunflower-free families; failures by rule: {'xor': 0, 'same-keep': 0, 'same-drop': 276} (control 'same-drop' is expected to fail)
+selftest passed
+F: 75 sets on 10 points {'stars': 5, 'k23': 10, 'chair_complements': 60}, set sizes [4, 6]
+   Sperner: True; 3-sunflowers among all 67525 triples: 0
+   port counts (N00, N01, N10, N11) over all ordered port pairs: [(11, 20, 20, 24)]
+H: 121 sets on 11 points {'orbits': [55, 55, 11]}, set sizes [5, 7]
+   Sperner: True; 3-sunflowers among all 287980 triples: 0
+   port counts (N00, N01, N10, N11) over all ordered port pairs: [(15, 31, 31, 44)]
+port counts match the page's rows (20,24),(11,20) and (31,44),(15,31): True
+F chain: T = [[20, 11], [24, 20]], x^2 - 40x + 136, rho = (40 + sqrt(1056))/2 = 20 + 2 sqrt(66): True
+   rho^(1/8) = [1.5664286622500366604 +/- 1.04e-20]
+   -> C_49 >= 1.5664286 (row 77): True
+F,H alternating: T_F T_H = [[1104, 641], [1624, 980]], x^2 - 2084x + 40936; page's matrix rows (980,1624),(641,1104) has the same trace/det: True
+   rho = (2084 + sqrt(4179312))/2 = 1042 + 2 sqrt(261207): True
+   rho^(1/17) = [1.5666969787543153309 +/- 2.33e-20]
+   -> C_49 >= 1.5666969 (row 78): True
+RESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)
+# environment: Linux 6.18.44-fc-v230; Intel Xeon @ 2.30GHz; run 2026-11-03
