@@ -8,7 +8,8 @@ directory) and the XOR-gluing lemma proved in README.md.
 Row 79 (1.5675517*): pure gluing, so goodness (Sperner + sunflower-free)
 follows from the lemma; the checker recomputes the gadget/unit port counts
 from F and H alone (counts multiply over glued pendants) and the bound
-rho^(1/60).
+rho^(1/60).  The 62-point unit (about 1.1e12 sets) is NOT enumerated; its
+goodness rests on the lemma alone.
 
 Row 80 (1.5678015*): B' = B + 15 sets, where B = glue(F at edge (0,3),
 H at 0).  The checker rebuilds B itself, compares it with data/B.txt, checks
@@ -16,6 +17,11 @@ that data/Bprime.txt is B plus 15 sets with no H-point, then checks B'
 exhaustively (Sperner, and no 3-sunflower: for every pair A, B there is no
 third member C with C n (A u B) = A n B), recomputes the port counts and the
 bound rho^(1/17).
+
+Every comparison with the page is ENFORCED: the run fails (exit status 1,
+"NOT CONFIRMED") if any of them disagrees.  These are the gadget and unit
+counts, point counts, port counts, the closed-form Perron roots (compared in
+exact integer arithmetic), and the leading digits the page prints.
 
 Usage: python3 -I check_c49_syl2026.py --data DIR   (DIR has B.txt, Bprime.txt)
 """
@@ -107,6 +113,11 @@ def perron(N):
     return (arb(tr) + arb(tr * tr - 4 * det).sqrt()) / 2, tr, det
 
 
+def closed_form(tr, det):
+    """(tr, disc) for rho = (tr + sqrt(disc)) / 2, exact integers."""
+    return tr, tr * tr - 4 * det
+
+
 def port_counts(fam, u, v):
     N = {(a, b): 0 for a in (0, 1) for b in (0, 1)}
     for S in fam:
@@ -144,6 +155,13 @@ def main():
     hc = counts_at(H, 0)
     print("H at point 0: (avoid, contain) = %s" % (hc,))
     ok = True
+    checks = []   # every comparison with the page; all must hold
+
+    def page_check(desc, cond):
+        cond = bool(cond)
+        checks.append((desc, cond))
+        print("        page check: %-76s %s" % (desc, "OK" if cond else "MISMATCH"))
+        return cond
 
     # ---------------- row 79: gadget G and the 62-point unit (pure gluing)
     # G = F with H glued at F-points 4 = (1,2) and 6 = (1,4); root F-point 0.
@@ -151,9 +169,15 @@ def main():
     for A in F:
         G[(A >> 0) & 1] += w_factor(hc, (A >> 4) & 1) * w_factor(hc, (A >> 6) & 1)
     G = tuple(G)
-    print("row 79: gadget G: %d sets on %d points, (avoid, contain root) = %s; page: "
-          "250659, 98308 / 152351: %s" % (sum(G), 10 + 2 * 9, G,
-                                          (sum(G), G) == (250659, (98308, 152351))))
+    g_pts = 10 + 2 * (11 - 2)            # each gluing merges two points and drops them
+    unit_pts = 10 + 2 * (g_pts - 2)
+    per_unit = unit_pts - 2               # the chain glues the unit's two ports
+    print("row 79: gadget G: %d sets on %d points, (avoid, contain root) = %s" % (
+        sum(G), g_pts, G))
+    page_check("gadget G: 250659 sets, 98308 avoiding and 152351 containing the root",
+         (sum(G), G) == (250659, (98308, 152351)))
+    page_check("gadget G has 28 points; the unit has 62 points, 60 added per unit",
+         (g_pts, unit_pts, per_unit) == (28, 62, 60))
     # unit: core F, ports 0 = (0,1) in and 1 = (0,2) out, G glued at core 2 and 3
     N = {(a, b): 0 for a in (0, 1) for b in (0, 1)}
     for A in F:
@@ -161,17 +185,19 @@ def main():
                                             * w_factor(G, (A >> 3) & 1))
     page = {(0, 0): 148811965456, (0, 1): 279351870092, (1, 0): 279351870092,
             (1, 1): 378843386627}
-    print("        unit (62 points) port counts %s; equal to the page: %s" % (
-        dict(sorted(N.items())), N == page))
+    print("        unit (62 points) port counts %s" % (dict(sorted(N.items())),))
+    page_check("unit port counts N00, N01 = N10, N11 equal the page's", N == page)
     rho, tr, det = perron(N)
-    b79 = rho ** (arb(1) / 60)
-    # page: rho = N01 + sqrt(N11 N00)
-    same_form = bool((rho - (arb(N[(0, 1)]) + arb(N[(1, 1)] * N[(0, 0)]).sqrt())).abs_upper() < arb(10) ** -40)
-    print("        rho = %s (= N01 + sqrt(N11 N00): %s); rho^(1/60) = %s" % (
-        rho.str(25), same_form, b79.str(20)))
+    b79 = rho ** (arb(1) / per_unit)
+    # page: rho = N01 + sqrt(N11 N00) = (2 N01 + sqrt(4 N11 N00)) / 2
+    page_check("rho = N01 + sqrt(N11 N00) (exact: trace 2 N01, discriminant 4 N11 N00)",
+               closed_form(tr, det) == (2 * page[(0, 1)], 4 * page[(1, 1)] * page[(0, 0)]))
+    print("        rho = %s; rho^(1/60) = %s" % (rho.str(25), b79.str(20)))
+    page_check("rho^(1/60) < 1.5675518, as the printed digits 1.5675517... say",
+               b79 < arb(15675518) / 10**7)
     c79 = bool(arb(15675517) / 10**7 < b79)
     print("        -> C_49 >= 1.5675517: %s" % c79)
-    ok &= N == page and c79 and same_form
+    ok &= c79
 
     # ---------------- row 80: B and B'
     paths = {k: os.path.join(args.data, k) for k in PINNED}
@@ -195,37 +221,59 @@ def main():
                         S |= 1 << (8 + h)
                 myB.add(S)
     theirB = read_family(paths["B.txt"])
-    print("row 80: my rebuild of B has %d sets; equals data/B.txt (%d sets): %s" % (
-        len(myB), len(theirB), set(theirB) == myB and len(theirB) == len(myB)))
-    ok &= set(theirB) == myB
+    sameB = set(theirB) == myB and len(theirB) == len(myB)
+    print("row 80: my rebuild of B has %d sets; equals data/B.txt (%d sets, no duplicates): %s" % (
+        len(myB), len(theirB), sameB))
+    ok &= sameB
+    # the "first step" stated in row 79: B alone, chained at (0,1) -> (0,2)
+    NB = port_counts(myB, 0, 1)
+    page_check("B: 4349 sets, port counts rows (1123,1481),(622,1123) [row 79, first step]",
+               len(myB) == 4349
+               and (NB[(1, 0)], NB[(1, 1)], NB[(0, 0)], NB[(0, 1)]) == (1123, 1481, 622, 1123))
+    rhoB, trB, detB = perron(NB)
+    bB = rhoB ** (arb(1) / 17)
+    page_check("rho_B = 1123 + sqrt(921182), exact [row 79, first step]",
+               closed_form(trB, detB) == (2 * 1123, 4 * 921182))
+    page_check("rho_B^(1/17) = 1.5675245... [row 79, first step]",
+               arb(15675245) / 10**7 < bB and bB < arb(15675246) / 10**7)
     Bp = read_family(paths["Bprime.txt"])
     extra = [S for S in Bp if S not in myB]
     Hmask = sum(1 << q for q in range(9, 19))
-    print("        data/Bprime.txt: %d sets = B + %d extra; extras avoid all H-points: %s"
-          % (len(Bp), len(extra), all(S & Hmask == 0 for S in extra)))
-    ok &= len(Bp) == 4364 and len(set(Bp)) == 4364 and len(extra) == 15 \
-        and myB <= set(Bp)
+    print("        data/Bprime.txt: %d sets = B + %d extra" % (len(Bp), len(extra)))
+    page_check("B' = B plus 15 sets inside the F-part (no H-point); 4364 distinct sets",
+               len(Bp) == 4364 and len(set(Bp)) == 4364 and len(extra) == 15
+               and myB <= set(Bp) and all(S & Hmask == 0 for S in extra))
+    bp_pts = 19
+    per_copy = bp_pts - 2                 # the chain glues the two ports of each copy
+    page_check("B' lies on 19 points; each copy adds 17 points",
+               all(S >> bp_pts == 0 for S in Bp) and per_copy == 17)
     t0 = time.perf_counter()
     sp = is_sperner(Bp)
     t1 = time.perf_counter()
-    wit = sunflower_free_exhaustive(Bp, 19)
+    wit = sunflower_free_exhaustive(Bp, bp_pts)
     t2 = time.perf_counter()
     print("        B' Sperner: %s [%.0fs]; exhaustive sunflower search over all %d pairs: %s [%.0fs]"
           % (sp, t1 - t0, len(Bp) * (len(Bp) - 1) // 2,
              "none found" if wit is None else "FOUND %s" % (wit,), t2 - t1))
     ok &= sp and wit is None
     Np = port_counts(Bp, 0, 1)
-    print("        B' port counts at (0, 1): %s; page rows (1127,1488),(622,1127): %s" % (
-        dict(sorted(Np.items())),
-        (Np[(1, 0)], Np[(1, 1)], Np[(0, 0)], Np[(0, 1)]) == (1127, 1488, 622, 1127)))
+    print("        B' port counts at (0, 1): %s" % (dict(sorted(Np.items())),))
+    page_check("B' port counts: rows (1127,1488),(622,1127)",
+               (Np[(1, 0)], Np[(1, 1)], Np[(0, 0)], Np[(0, 1)]) == (1127, 1488, 622, 1127))
     rho, tr, det = perron(Np)
-    b80 = rho ** (arb(1) / 17)
-    print("        rho = %s = 1127 + sqrt(925536): %s; rho^(1/17) = %s" % (
-        rho.str(20), bool((rho - 1127 - arb(925536).sqrt()).abs_upper() < arb(10) ** -40),
-        b80.str(20)))
+    b80 = rho ** (arb(1) / per_copy)
+    page_check("rho = 1127 + sqrt(925536) (exact: trace 2254, discriminant 4*925536)",
+               closed_form(tr, det) == (2254, 4 * 925536))
+    print("        rho = %s; rho^(1/17) = %s" % (rho.str(20), b80.str(20)))
+    page_check("rho^(1/17) < 1.5678016, as the printed digits 1.5678015... say",
+               b80 < arb(15678016) / 10**7)
     c80 = bool(arb(15678015) / 10**7 < b80)
     print("        -> C_49 >= 1.5678015: %s" % c80)
-    ok &= c80 and (Np[(1, 0)], Np[(1, 1)], Np[(0, 0)], Np[(0, 1)]) == (1127, 1488, 622, 1127)
+    ok &= c80
+    n_bad = sum(1 for _, c in checks if not c)
+    print("page cross-checks: %d of %d agree%s" % (
+        len(checks) - n_bad, len(checks), "" if not n_bad else "  -> PAGE MISMATCH"))
+    ok &= n_bad == 0
     print("RESULT: %s" % ("CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)"
                           if ok else "NOT CONFIRMED"))
     return 0 if ok else 1

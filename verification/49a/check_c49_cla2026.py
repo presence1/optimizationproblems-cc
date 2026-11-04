@@ -17,8 +17,19 @@ chain bound: XOR-gluing (see README.md for the proof) gives chain families of
 size ~ c rho^k on (points added per period) * k + O(1) points, where rho is
 the Perron root of the transfer matrix T[a][a'] = N_{a, 1-a'}.  So
 C_49 >= rho^(1/8) (F alone) and C_49 >= rho^(1/17) (F, H alternating).
+
+Every comparison with the page is ENFORCED: the run fails (exit status 1,
+"NOT CONFIRMED") if any of them disagrees.  They are made in exact integer
+arithmetic where the page gives exact values: the page's matrices (the page
+prints the transpose of T as defined here), the characteristic data behind
+the closed-form Perron roots 20 + 2 sqrt(66) and 1042 + 2 sqrt(261207), the
+points added per period (8 and 17), and, in Arb, the leading digits the page
+prints for rho^(1/8) and rho^(1/17).
+
 A randomised self-test checks the XOR-gluing lemma by brute force on small
-families, and confirms that same-status gluing would not work.
+families: injectivity of (A, B) -> member (part (i) of the lemma) and
+goodness of the glued family (part (ii)).  It also confirms that the
+same-status rule that drops the merged point ("same-drop") fails.
 
 Usage: python3 -I check_c49_cla2026.py [--selftest]
 """
@@ -122,6 +133,15 @@ def matmul(X, Y):
     return [[sum(X[i][k] * Y[k][j] for k in range(2)) for j in range(2)] for i in range(2)]
 
 
+def transpose(X):
+    return [[X[j][i] for j in range(2)] for i in range(2)]
+
+
+def closed_form(tr, det):
+    """(tr, disc) for rho = (tr + sqrt(disc)) / 2, exact integers."""
+    return tr, tr * tr - 4 * det
+
+
 def perron_root_arb(T):
     from flint import arb
     tr = T[0][0] + T[1][1]
@@ -132,6 +152,14 @@ def perron_root_arb(T):
 
 
 # ------------------------------------------------------------ gluing lemma test
+def admissible_pairs(F1, v1, F2, u2):
+    """Number of pairs (A, B) admitted by the XOR rule, i.e. the size G would
+    have if (A, B) -> (A minus v1) u (B minus u2) were injective (lemma (i))."""
+    n_in1 = sum((A >> v1) & 1 for A in F1)
+    n_in2 = sum((B >> u2) & 1 for B in F2)
+    return n_in1 * (len(F2) - n_in2) + (len(F1) - n_in1) * n_in2
+
+
 def glue(F1, n1, u1, v1, F2, n2, u2, rule):
     """Glue F1's port v1 to F2's port u2.  Points of F2 are shifted by n1.
     rule 'xor': exactly one of the two ports present (the merged point then
@@ -178,6 +206,7 @@ def random_sf_sperner(n, tries, rng):
 def selftest():
     rng = random.Random(49)
     bad = {"xor": 0, "same-keep": 0, "same-drop": 0}
+    not_injective = 0   # lemma (i): XOR gluing never merges two pairs
     trials = 0
     for _ in range(600):
         n1, n2 = rng.randrange(3, 7), rng.randrange(3, 7)
@@ -192,10 +221,19 @@ def selftest():
             G = glue(F1, n1, u1, v1, F2, n2, u2, rule)
             if sunflower_triples(G) or not is_sperner(G):
                 bad[rule] += 1
+            if rule == "xor" and len(G) != admissible_pairs(F1, v1, F2, u2):
+                not_injective += 1
     print("selftest: %d random gluings of Sperner sunflower-free families; "
-          "failures by rule: %s (control 'same-drop' is expected to fail)" % (trials, bad))
+          "goodness failures by rule: %s (control 'same-drop' is expected to fail); "
+          "XOR gluings where two pairs gave the same member: %d"
+          % (trials, bad, not_injective))
     assert trials > 200 and bad["xor"] == 0 and bad["same-keep"] == 0
     assert bad["same-drop"] > 0
+    assert not_injective == 0
+    # the injectivity count can fail: without Sperner it does
+    # (F = {{}, {x}} glued to itself gives 2 admissible pairs, 1 member)
+    assert admissible_pairs([0b0, 0b1], 0, [0b0, 0b1], 0) == 2
+    assert len(glue([0b0, 0b1], 1, 0, 0, [0b0, 0b1], 1, 0, "xor")) == 1
     # sanity of the sunflower test itself
     assert sunflower_triples([0b011, 0b101, 0b110]) == 0         # pairwise {1 elt}, not equal
     assert sunflower_triples([0b001, 0b010, 0b100]) == 1         # disjoint: kernel empty
@@ -226,30 +264,65 @@ def main():
         ok &= len(fam) == expect and sp and sf == 0 and len(pcs) == 1
         fams[name] = dict(zip(((0, 0), (0, 1), (1, 0), (1, 1)), next(iter(pcs))))
     NF, NH = fams["F"], fams["H"]
-    ok &= (NF[(1, 0)], NF[(1, 1)], NF[(0, 0)], NF[(0, 1)]) == (20, 24, 11, 20)
-    ok &= (NH[(1, 0)], NH[(1, 1)], NH[(0, 0)], NH[(0, 1)]) == (31, 44, 15, 31)
-    print("port counts match the page's rows (20,24),(11,20) and (31,44),(15,31): %s" % ok)
+    checks = []   # every comparison with the page; all must hold
+
+    def page(desc, cond):
+        cond = bool(cond)
+        checks.append((desc, cond))
+        print("   page check: %-80s %s" % (desc, "OK" if cond else "MISMATCH"))
+        return cond
+
+    page("F port counts: rows (20,24),(11,20) [row 77]",
+         (NF[(1, 0)], NF[(1, 1)], NF[(0, 0)], NF[(0, 1)]) == (20, 24, 11, 20))
+    page("H port counts: rows (31,44),(15,31) [row 78]",
+         (NH[(1, 0)], NH[(1, 1)], NH[(0, 0)], NH[(0, 1)]) == (31, 44, 15, 31))
+
+    nF, nH = 10, 11
+    pF, pP = nF - 2, (nF - 2) + (nH - 2)      # each gluing merges two points and drops them
+    page("points added per copy of F = 8 [row 77]", pF == 8)
+    page("points added per period F, H = 17 [row 78]", pP == 17)
 
     TF, TH = transfer(NF), transfer(NH)
+    page("transfer matrix of F, as printed (transposed): rows (20,24),(11,20)",
+         transpose(TF) == [[20, 24], [11, 20]])
+    page("transfer matrix of H, as printed (transposed): rows (31,44),(15,31)",
+         transpose(TH) == [[31, 44], [15, 31]])
     rhoF, tr, det, disc = perron_root_arb(TF)
-    bF = rhoF ** (arb(1) / 8)
-    print("F chain: T = %s, x^2 - %dx + %d, rho = (%d + sqrt(%d))/2 = 20 + 2 sqrt(66): %s" % (
-        TF, tr, det, tr, disc, disc == 4 * 264))
+    bF = rhoF ** (arb(1) / pF)
+    print("F chain: T = %s, x^2 - %dx + %d, rho = (%d + sqrt(%d))/2" % (TF, tr, det, tr, disc))
+    # 20 + 2 sqrt(66) = (40 + sqrt(1056)) / 2
+    page("rho_F = 20 + 2 sqrt(66), i.e. trace 40 and discriminant 1056 [row 77]",
+         closed_form(tr, det) == (40, 16 * 66))
     print("   rho^(1/8) = %s" % bF.str(20))
+    # the page prints rho^(1/8) = 1.5664286...; the lower end is the claim below
+    page("rho_F^(1/8) < 1.5664287, as the printed digits 1.5664286... say [row 77]",
+         bF < arb(15664287) / 10**7)
     c1 = bool(arb(15664286) / 10**7 < bF)
     print("   -> C_49 >= 1.5664286 (row 77): %s" % c1)
+
     TP = matmul(TF, TH)
     rhoP, tr, det, disc = perron_root_arb(TP)
-    bP = rhoP ** (arb(1) / 17)
-    print("F,H alternating: T_F T_H = %s, x^2 - %dx + %d; page's matrix rows "
-          "(980,1624),(641,1104) has the same trace/det: %s" % (
-              TP, tr, det, (tr, det) == (980 + 1104, 980 * 1104 - 1624 * 641)))
-    print("   rho = (%d + sqrt(%d))/2 = 1042 + 2 sqrt(261207): %s" % (
-        tr, disc, (tr, disc) == (2084, 16 * 261207)))
+    bP = rhoP ** (arb(1) / pP)
+    print("F,H alternating: T_F T_H = %s, x^2 - %dx + %d, rho = (%d + sqrt(%d))/2" % (
+        TP, tr, det, tr, disc))
+    page("product as printed, T_F^t T_H^t: rows (980,1624),(641,1104) [row 78]",
+         matmul(transpose(TF), transpose(TH)) == [[980, 1624], [641, 1104]])
+    page("T_F T_H has the trace and determinant of the printed product",
+         (tr, det) == (980 + 1104, 980 * 1104 - 1624 * 641))
+    # 1042 + 2 sqrt(261207) = (2084 + sqrt(16 * 261207)) / 2
+    page("rho = 1042 + 2 sqrt(261207), i.e. trace 2084, discriminant 16*261207",
+         closed_form(tr, det) == (2084, 16 * 261207))
     print("   rho^(1/17) = %s" % bP.str(20))
+    # the page prints rho^(1/17) = 1.5666969...; the lower end is the claim below
+    page("rho^(1/17) < 1.5666970, as the printed digits 1.5666969... say [row 78]",
+         bP < arb(15666970) / 10**7)
     c2 = bool(arb(15666969) / 10**7 < bP)
     print("   -> C_49 >= 1.5666969 (row 78): %s" % c2)
-    ok &= c1 and c2
+
+    n_bad = sum(1 for _, c in checks if not c)
+    print("page cross-checks: %d of %d agree%s" % (
+        len(checks) - n_bad, len(checks), "" if not n_bad else "  -> PAGE MISMATCH"))
+    ok &= c1 and c2 and n_bad == 0
     print("RESULT: %s" % ("CONFIRMED (given the XOR-gluing chain lemma, proved in README)"
                           if ok else "NOT CONFIRMED"))
     return 0 if ok else 1
