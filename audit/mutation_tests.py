@@ -1,29 +1,45 @@
 #!/usr/bin/env python3
-"""Mutation tests for the checkers on verify/1d, verify/1c, verify/70a,
-verify/16a and verify/49a.
+"""Mutation tests for the checkers in verification/{1d,1c,70a,16a,49a}/.
+
+Written for the audit of the verify/* branches (AUDIT.md section 4, tests
+1d-1 ... 49a-15) and extended on branch replay/package, after the checkers
+were fixed, with tests for each new enforcement (1d-7 onwards, 1c-9 onwards,
+70a-6, 16a-5, 49a-16 onwards).  1c-8 now expects failure: the recorded
+minimiser is enforced.
 
 Each test perturbs the certificate data, a recorded page value, or the
 claimed bound, and runs the UNMODIFIED checker (or, where the perturbation
 is of something hard-coded in the checker, a patched COPY of it) with
-python3 -I in a scratch directory.  The branches are never modified.
-Two tests (16a-3, 49a-4) are code mutations: they change a line of the
-checker's own logic, to see whether its internal cross-checks can fail.
+python3 -I in a scratch directory.  The code under test is never modified.
+Some tests are code mutations: they change a line of the checker's own logic,
+to see whether its internal cross-checks can fail (16a-3, 49a-4, 49a-17,
+49a-19, 49a-21).  Tests marked "python3 -I -S" run the checker with the site
+directories disabled, so that python-flint (and numpy, mpmath) cannot be
+imported: a correct checker must then stop with a nonzero exit, never skip.
 
 A test PASSES when the checker behaves as a correct checker must:
-  - expect="fail": nonzero exit status, and every marker string in `need`
-    appears in its output (so it failed for the right reason);
+  - expect="fail": nonzero exit status (equal to `exit_expected` where given),
+    and every marker string in `need` appears in its output (so it failed for
+    the right reason);
   - expect="pass": exit status 0 (used for perturbations that a correct
-    checker should accept, or to document a check that is printed but not
-    enforced).
+    checker should accept).
+A test whose patch target does not exist in the code under test is reported
+as N/A ("check absent") and counts as NOT behaving correctly: that happens
+when this suite is run against the original verify/* checkers, which lack
+the check the test targets.
 Hash-pinned data is tested twice where useful: once with the pin intact
 (the checker must stop at the hash) and once with the pin updated in a
 patched copy (so the mathematical path itself is exercised).
 
 Usage:
-  python3 -I mutation_tests.py --clean DIR --data DIR --work DIR [--only 1d,1c,...] [-j 3]
-    --clean: holds v1d v1c v70a v16a v49a (clones of the verify/* branches)
-    --data : holds 1d/ 1c/ 70a/c70-certificate/ 16a/c16-bgw-certificates/
-             49a/syl/ 49a/irsi/  (fetched as the READMEs describe)
+  python3 -I mutation_tests.py (--package DIR | --clean DIR) --data DIR --work DIR
+                               [--only 1d,1c,...] [-j 3] [--json-out FILE]
+    --package: a checkout of replay/package (holds verification/<id>/ for
+               all five constants); this is the code under test
+    --clean  : instead, holds v1d v1c v70a v16a v49a, one tree per constant
+               (e.g. the original verify/* checkers, see fetch_all.sh)
+    --data   : holds 1d/ 1c/ 70a/c70-certificate/ 16a/c16-bgw-certificates/
+               49a/syl/ 49a/irsi/  (fetched as the READMEs describe)
 """
 
 import argparse
@@ -41,6 +57,7 @@ import time
 from fractions import Fraction
 
 PY = [sys.executable, "-I"]
+PY_NOSITE = [sys.executable, "-I", "-S"]   # site dirs off: python-flint, numpy, mpmath unimportable
 sys.dont_write_bytecode = True   # importing c49_independent must not leave __pycache__ behind
 
 
@@ -53,8 +70,9 @@ def sha_file(p):
 
 
 class Ctx:
-    def __init__(self, clean, data, work):
-        self.clean, self.data, self.work = clean, data, work
+    def __init__(self, clean, data, work, package=None):
+        self.clean, self.data, self.work, self.package = clean, data, work, package
+        self.missing = {}   # checker-copy dir -> required patch targets that are absent
 
     def newdir(self, name):
         d = os.path.join(self.work, name)
@@ -73,15 +91,26 @@ class Ctx:
         return d
 
     def checker_copy(self, branch, rel_files, name, patches=()):
-        """Copy checker file(s) to a fresh dir, applying (file, old, new)
-        patches; each `old` must occur exactly once."""
+        """Copy checker file(s) to a fresh dir, applying (file, old, new) or
+        (file, old, new, "optional") patches.  `old` must occur at most once.
+        A missing optional target is skipped (e.g. a hash pin that the
+        original checker does not have); a missing required target marks the
+        test N/A, because the check it targets is absent."""
         d = self.newdir(name + "_code")
+        root = self.package if self.package else os.path.join(self.clean, branch)
         for rel in rel_files:
-            shutil.copy(os.path.join(self.clean, branch, rel), d)
-        for fname, old, new in patches:
+            shutil.copy(os.path.join(root, rel), d)
+        for patch in patches:
+            fname, old, new = patch[:3]
+            optional = len(patch) > 3 and patch[3] == "optional"
             p = os.path.join(d, fname)
             s = open(p, encoding="utf-8").read()
-            assert s.count(old) == 1, (fname, old[:60], s.count(old))
+            n = s.count(old)
+            assert n <= 1, (fname, old[:60], n)
+            if n == 0:
+                if not optional:
+                    self.missing.setdefault(d, []).append("%s: %r" % (fname, old[:50]))
+                continue
             open(p, "w", encoding="utf-8").write(s.replace(old, new))
         return d
 
@@ -227,6 +256,15 @@ def tests_1d(ctx):
     T.append(dict(id="1d-6", what="STEPS2026: last cell dropped (599 values), pin updated",
                   cmd=PY + ["check_c1d.py", "--data", d] + common, cwd=code, expect="fail",
                   need=["PROBLEM"]))
+    # d7, d8: python-flint unavailable (python3 -I -S): must stop, never skip check B
+    T.append(dict(id="1d-7", what="python-flint unavailable (python3 -I -S), full run: must stop, not skip check B",
+                  cmd=PY_NOSITE + ["check_c1d.py", "--data", base] + common,
+                  cwd=ctx.checker_copy("v1d", files, "d7"), expect="fail", exit_expected=2,
+                  need=["python-flint is not importable"], nosite=True))
+    T.append(dict(id="1d-8", what="python-flint unavailable (python3 -I -S), --selftest: must stop, not skip",
+                  cmd=PY_NOSITE + ["check_c1d.py", "--selftest"],
+                  cwd=ctx.checker_copy("v1d", files, "d8"), expect="fail", exit_expected=2,
+                  need=["python-flint is not importable"], nosite=True))
     return T
 
 
@@ -293,10 +331,17 @@ def tests_1c(ctx):
                   cmd=PY + ["check_c1c.py", "--data", d] + common, cwd=code, expect="fail",
                   need=["SHAPE MISMATCH", "PROBLEM"]))
     code = ctx.checker_copy("v1c", files, "c8", patches=[("check_c1c.py", "argmin=21264,", "argmin=21265,")])
-    T.append(dict(id="1c-8", what="recorded argmin changed 21264 -> 21265 (README says it is compared)",
-                  cmd=PY + ["check_c1c.py", "--data", base] + common, cwd=code, expect="pass",
-                  need=["argmin matches the page (k = 21265): False"],
-                  note="printed but NOT enforced: the checker still exits 0"))
+    T.append(dict(id="1c-8", what="recorded argmin changed 21264 -> 21265 (the minimiser must be enforced)",
+                  cmd=PY + ["check_c1c.py", "--data", base] + common, cwd=code, expect="fail",
+                  need=[r"re:argmin matches the page \(k = 21265[^)]*\): False", "PROBLEM"]))
+    T.append(dict(id="1c-9", what="python-flint unavailable (python3 -I -S), full run: must stop, not skip check B",
+                  cmd=PY_NOSITE + ["check_c1c.py", "--data", base] + common,
+                  cwd=ctx.checker_copy("v1c", files, "c9"), expect="fail", exit_expected=2,
+                  need=["python-flint is not importable"], nosite=True))
+    T.append(dict(id="1c-10", what="python-flint unavailable (python3 -I -S), --selftest: must stop, not skip",
+                  cmd=PY_NOSITE + ["check_c1c.py", "--selftest"],
+                  cwd=ctx.checker_copy("v1c", files, "c10"), expect="fail", exit_expected=2,
+                  need=["python-flint is not importable"], nosite=True))
     return T
 
 
@@ -325,6 +370,10 @@ def tests_70a(ctx):
         T.append(dict(id=tid, what=what, cmd=PY + ["check_c70.py", "--skip-baseline", "--json", p],
                       cwd=ctx.checker_copy("v70a", files, tid), expect="fail",
                       need=["certificate parameters match the constant page: False", "NOT CONFIRMED"]))
+    T.append(dict(id="70a-6", what="python-flint and mpmath unavailable (python3 -I -S): must stop",
+                  cmd=PY_NOSITE + ["check_c70.py", "--skip-baseline", "--json", cert],
+                  cwd=ctx.checker_copy("v70a", files, "70a-6"), expect="fail",
+                  need=["ModuleNotFoundError"], nosite=True))
     return T
 
 
@@ -355,6 +404,10 @@ def tests_16a(ctx):
                   cmd=PY + ["check_c16_lower.py", "--skip-calibration", "--json", p],
                   cwd=ctx.checker_copy("v16a", files, "s4"), expect="fail",
                   need=["certificate R and mu match the page/README: False", "NOT CONFIRMED"]))
+    T.append(dict(id="16a-5", what="numpy and python-flint unavailable (python3 -I -S): must stop",
+                  cmd=PY_NOSITE + ["check_c16_lower.py", "--skip-calibration"],
+                  cwd=ctx.checker_copy("v16a", files, "s5"), expect="fail",
+                  need=["ModuleNotFoundError"], nosite=True))
     return T
 
 
@@ -392,8 +445,13 @@ def tests_49a(ctx, rng):
                   cwd=ctx.checker_copy("v49a", files, "l4", patches=[(
                       "check_c49_cla2026.py", "    return [[N[(a, 1 - ap)] for ap in (0, 1)] for a in (0, 1)]",
                       "    return [[N[(a, ap)] for ap in (0, 1)] for a in (0, 1)]  # MUTATED")]),
-                  note="the page cross-checks (trace/det, 20+2sqrt(66), 1042+2sqrt(261207)) print False "
-                       "but are not part of the pass/fail decision, so the checker still CONFIRMS"))
+                  note="caught by the page cross-checks (matrices as printed, trace/det, 20+2sqrt(66), "
+                       "1042+2sqrt(261207), printed digits), which are now enforced"))
+    T.append(dict(id="49a-16", what="Cla2026: recorded determinant of the page's product matrix changed "
+                  "(641 -> 642 in 980*1104 - 1624*641)",
+                  cmd=PY + ["check_c49_cla2026.py"], expect="fail", need=["NOT CONFIRMED"],
+                  cwd=ctx.checker_copy("v49a", files, "l16", patches=[(
+                      "check_c49_cla2026.py", "980 * 1104 - 1624 * 641", "980 * 1104 - 1624 * 642")])))
     # ---- Syl2026
     syl = os.path.join(ctx.data, "49a", "syl")
     PIN_BP = '"2a72385704b8203269cda4f4b0dfdabc74d5adb8f4a2bc1dac1f570cb96b5cec"'
@@ -451,6 +509,23 @@ def tests_49a(ctx, rng):
                   cmd=PY + ["check_c49_syl2026.py", "--data", syl], expect="fail", need=["NOT CONFIRMED"],
                   cwd=ctx.checker_copy("v49a", files, "y5", patches=[(
                       "check_c49_syl2026.py", "page = {(0, 0): 148811965456,", "page = {(0, 0): 148811965457,")])))
+    T.append(dict(id="49a-17", what="Syl2026 row 80 (code mutation): B' transfer matrix built with the same-status "
+                  "rule (rho rises to about 2262; the bound would still pass)",
+                  cmd=PY + ["check_c49_syl2026.py", "--data", syl], expect="fail", need=["NOT CONFIRMED"],
+                  cwd=ctx.checker_copy("v49a", files, "y6", patches=[(
+                      "check_c49_syl2026.py", "    rho, tr, det = perron(Np)",
+                      "    rho, tr, det = perron({(0, 1): Np[(0, 0)], (1, 0): Np[(1, 1)], "
+                      "(0, 0): Np[(0, 1)], (1, 1): Np[(1, 0)]})  # MUTATED")])))
+    T.append(dict(id="49a-18", what="Syl2026 row 79: recorded gadget count changed (152351 -> 152352)",
+                  cmd=PY + ["check_c49_syl2026.py", "--data", syl], expect="fail", need=["NOT CONFIRMED"],
+                  cwd=ctx.checker_copy("v49a", files, "y7", patches=[(
+                      "check_c49_syl2026.py", "(250659, (98308, 152351))", "(250659, (98308, 152352))")])))
+    T.append(dict(id="49a-19", what="Syl2026 row 80 (code mutation): H-part mask widened to all 19 points, so "
+                  "'the 15 extra sets avoid H' must fail",
+                  cmd=PY + ["check_c49_syl2026.py", "--data", syl], expect="fail", need=["NOT CONFIRMED"],
+                  cwd=ctx.checker_copy("v49a", files, "y8", patches=[(
+                      "check_c49_syl2026.py", "Hmask = sum(1 << q for q in range(9, 19))",
+                      "Hmask = sum(1 << q for q in range(0, 19))  # MUTATED")])))
     # ---- IRSI2026
     irsi = os.path.join(ctx.data, "49a", "irsi")
     v10 = json.loads(open(os.path.join(irsi, "v10.json")).read())
@@ -465,19 +540,26 @@ def tests_49a(ctx, rng):
     assert r
     A, B, C = r
 
+    PIN_V10 = '"c30a74fed64616c5c6980fae91f94ae5899fed6a4cb338b537480ee9517d715b"'
+
     def irsi_mut(name, fn, what, need, patches=()):
         d = ctx.copy_data("49a/irsi", name)
         obj = json.loads(open(os.path.join(irsi, "v10.json")).read())
         fn(obj)
-        open(os.path.join(d, "v10.json"), "w").write(json.dumps(obj))
-        T.append(dict(id=name, what=what, cmd=PY + ["check_c49_irsi2026.py", "--data", d],
-                      cwd=ctx.checker_copy("v49a", files, name, patches=patches),
+        p = os.path.join(d, "v10.json")
+        open(p, "w").write(json.dumps(obj))
+        # the replay pins the v1.0 bytes (the page records no hash): update the
+        # pin in the copy so that the mathematical path is exercised.  The
+        # original checker has no pin, hence "optional".
+        pin = ("check_c49_irsi2026.py", PIN_V10, '"%s"' % sha_file(p), "optional")
+        T.append(dict(id=name, what=what + ", pin updated", cmd=PY + ["check_c49_irsi2026.py", "--data", d],
+                      cwd=ctx.checker_copy("v49a", files, name, patches=tuple(patches) + (pin,)),
                       expect="fail", need=need))
 
     def repl(o):
         s = o["bases"]["B"]["sets"]
         s[s.index(T0)] = C
-    irsi_mut("49a-10", repl, "IRSI v1.0 (no pin on the page): one set replaced, same port statuses, "
+    irsi_mut("49a-10", repl, "IRSI v1.0 (no hash on the page): one set replaced, same port statuses, "
              "closing a sunflower (Sperner kept)", ["FOUND", "NOT ALL CONFIRMED"])
 
     def dup(o):
@@ -507,16 +589,44 @@ def tests_49a(ctx, rng):
     T.append(dict(id="49a-15", what="IRSI v1.2 (pinned): last set removed, pin intact",
                   cmd=PY + ["check_c49_irsi2026.py", "--data", d], cwd=ctx.checker_copy("v49a", files, "49a-15"),
                   expect="fail", need=["MISMATCH", "NOT ALL CONFIRMED"]))
+    T.append(dict(id="49a-20", what="IRSI v1.1: recorded characteristic polynomial changed (det 1969416 -> 1969417)",
+                  cmd=PY + ["check_c49_irsi2026.py", "--data", irsi], expect="fail", need=["NOT ALL CONFIRMED"],
+                  cwd=ctx.checker_copy("v49a", files, "49a-20", patches=[(
+                      "check_c49_irsi2026.py", '"v11_s17.json": (3710, 1969416)', '"v11_s17.json": (3710, 1969417)')])))
+    T.append(dict(id="49a-21", what="IRSI (code mutation): trace and determinant taken with the same-status rule "
+                  "(rho rises; the bounds would still pass)",
+                  cmd=PY + ["check_c49_irsi2026.py", "--data", irsi], expect="fail", need=["NOT ALL CONFIRMED"],
+                  cwd=ctx.checker_copy("v49a", files, "49a-21", patches=[(
+                      "check_c49_irsi2026.py",
+                      "        tr = N[(0, 1)] + N[(1, 0)]\n        det = N[(0, 1)] * N[(1, 0)] - N[(0, 0)] * N[(1, 1)]",
+                      "        tr = N[(0, 0)] + N[(1, 1)]  # MUTATED\n"
+                      "        det = N[(0, 0)] * N[(1, 1)] - N[(0, 1)] * N[(1, 0)]  # MUTATED")])))
+    d = ctx.copy_data("49a/irsi", "49a-22")
+    obj = json.loads(open(os.path.join(irsi, "v10.json")).read())
+    p = os.path.join(d, "v10.json")
+    open(p, "w").write(json.dumps(obj, indent=2))   # same sets, different bytes
+    assert sha_file(p) != sha_file(os.path.join(irsi, "v10.json"))
+    T.append(dict(id="49a-22", what="IRSI v1.0 re-serialised (same content, different bytes), pin intact: "
+                  "the replay must check the bytes it cites",
+                  cmd=PY + ["check_c49_irsi2026.py", "--data", d], cwd=ctx.checker_copy("v49a", files, "49a-22"),
+                  expect="fail", need=["MISMATCH", "NOT ALL CONFIRMED"]))
+    T.append(dict(id="49a-23", what="python-flint and numpy unavailable (python3 -I -S): Syl2026 must stop",
+                  cmd=PY_NOSITE + ["check_c49_syl2026.py", "--data", syl],
+                  cwd=ctx.checker_copy("v49a", files, "49a-23"), expect="fail",
+                  need=["ModuleNotFoundError"], nosite=True))
     return T
 
 
 def evaluate(t):
+    if t.get("na"):
+        return dict(t, code="-", secs=0.0, ok=False, markers=False,
+                    note=t["na"], tail="(not run: %s)" % t["na"])
     code, out, dt = run(t["cmd"], t["cwd"])
     failed = code != 0
     markers = all((re.search(s[3:], out) is not None) if s.startswith("re:") else (s in out)
                   for s in t["need"])
     if t["expect"] == "fail":
-        ok = failed and markers
+        ok = failed and markers and (t.get("exit_expected") is None or code == t["exit_expected"])
     else:
         ok = (not failed) and markers
     return dict(t, code=code, secs=round(dt, 1), ok=ok, markers=markers,
@@ -525,14 +635,17 @@ def evaluate(t):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--clean", required=True)
+    src = ap.add_mutually_exclusive_group(required=True)
+    src.add_argument("--package", help="checkout of replay/package (code under test)")
+    src.add_argument("--clean", help="dir with v1d v1c v70a v16a v49a, one tree per constant")
     ap.add_argument("--data", required=True)
     ap.add_argument("--work", required=True)
     ap.add_argument("--only", default="1d,1c,70a,16a,49a")
     ap.add_argument("-j", type=int, default=3)
     ap.add_argument("--json-out")
     args = ap.parse_args()
-    ctx = Ctx(os.path.abspath(args.clean), os.path.abspath(args.data), os.path.abspath(args.work))
+    ctx = Ctx(os.path.abspath(args.clean) if args.clean else None, os.path.abspath(args.data),
+              os.path.abspath(args.work), os.path.abspath(args.package) if args.package else None)
     os.makedirs(ctx.work, exist_ok=True)
     rng = random.Random(2026)
     tests = []
@@ -547,6 +660,14 @@ def main():
         tests += tests_16a(ctx)
     if "49a" in only:
         tests += tests_49a(ctx, rng)
+    # a missing python-flint can only be simulated if -S really hides it
+    hidden = subprocess.run(PY_NOSITE + ["-c", "import flint"], capture_output=True).returncode != 0
+    for t in tests:
+        if t["cwd"] in ctx.missing:
+            t["na"] = "N/A: check absent (patch target not found: %s)" % "; ".join(ctx.missing[t["cwd"]])
+        elif t.get("nosite") and not hidden:
+            t["na"] = "N/A: python-flint is importable even under python3 -I -S here"
+    print("code under test: %s" % (ctx.package or ctx.clean), flush=True)
     print("running %d mutation tests with %d workers" % (len(tests), args.j), flush=True)
     with cf.ThreadPoolExecutor(max_workers=args.j) as ex:
         results = list(ex.map(evaluate, tests))
@@ -556,7 +677,8 @@ def main():
         verdict = "yes" if r["ok"] else "**NO**"
         if r.get("note"):
             verdict += " (%s)" % r["note"]
-        print("| %s | %s | %s | %s | %s |" % (r["id"], r["what"], r["expect"], r["code"], verdict))
+        exp = r["expect"] + (" (exit %d)" % r["exit_expected"] if r.get("exit_expected") else "")
+        print("| %s | %s | %s | %s | %s |" % (r["id"], r["what"].replace("|", "\\|"), exp, r["code"], verdict))
     bad = [r for r in results if not r["ok"]]
     for r in results:
         print("\n--- %s (exit %s, %.0fs, markers found: %s)\n%s" % (r["id"], r["code"], r["secs"],

@@ -1,22 +1,30 @@
 #!/bin/sh
 # Fetch everything the audit scripts read, into a fresh directory ROOT:
-#   ROOT/clean/v1d ... v49a       clones of the verify/* branches (the code under audit)
 #   ROOT/data/1d, 1c, 70a, 16a, 49a/{syl,irsi}   certificate data, pinned and hash-checked
+#   ROOT/clean/v1d ... v49a   the ORIGINAL checkers as audited (verify/* tips),
+#                             extracted from this repository's own history (they
+#                             are merge parents on replay/package); used only for
+#                             the before/after comparison of the mutation tests
+# The code under test is the checkout that contains this script.
 # Every certificate file is checked against a pinned SHA-256 (or, where the
-# constant page records none, against the value observed during this audit).
+# constant page records none, against the value observed during the audit).
 # Nothing fetched here is executed; the audit scripts read it as data.
 set -eu
 ROOT=${1:?usage: fetch_all.sh EMPTY_DIR}
-FORK=${FORK:-https://github.com/presence1/optimizationproblems-cc}
+REPO=$(cd "$(dirname "$0")/.." && pwd)
 mkdir -p "$ROOT/clean" "$ROOT/data/1d" "$ROOT/data/1c" "$ROOT/data/70a" "$ROOT/data/16a" \
          "$ROOT/data/49a/syl" "$ROOT/data/49a/irsi" "$ROOT/data/49a/clones"
 RAW=https://raw.githubusercontent.com
 
-for b in 1d 1c 70a 16a 49a; do
-  git clone -q --depth 5 --branch "verify/$b" "$FORK" "$ROOT/clean/v$b"
+# the audited tips of verify/1d, 1c, 70a, 16a, 49a (see AUDIT.md)
+for spec in 1d:04247b2cf82ff4b890e05d8097c78d19c1f8e0aa 1c:1bcd7447fbbc2141bca402bb84ce80d5814f33a4 \
+            70a:e957bb56e881bb4670f0c909dd62451ae6101936 16a:4659ded2d20254caf2791c8af4d02f936c7ac141 \
+            49a:150f084f63273eece586c72eedb4596b096d96b4; do
+  b=${spec%%:*}; c=${spec#*:}
+  mkdir -p "$ROOT/clean/v$b"
+  git -C "$REPO" archive "$c" "verification/$b" | tar -x -C "$ROOT/clean/v$b"
+  printf 'original checkers v%s: %s\n' "$b" "$c"
 done
-# branch tips audited
-( cd "$ROOT/clean" && for b in 1d 1c 70a 16a 49a; do printf 'v%s %s\n' "$b" "$(git -C v$b rev-parse --short HEAD)"; done )
 
 curl -fsS -o "$ROOT/data/1d/steps_construction.json" \
   "$RAW/steps-re/c1d-certificate/9a091494facc801eaf6b92b175b63c58b7c3b30b/construction.json"
