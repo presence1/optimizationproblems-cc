@@ -24,7 +24,9 @@ Method (proof in README.md):
 Three independent evaluations are made:
   A. c_s by a direct O(N^2) loop over Python integers;
   B. c_s as the coefficients of P(x)^2 with python-flint's fmpz_poly
-     (a different multiplication algorithm), if python-flint is installed;
+     (a different multiplication algorithm).  python-flint is REQUIRED: if it
+     cannot be imported the script stops with exit status 2 rather than skip
+     check B (also for --selftest);
   C. (f*f)(t) by exact integration of x -> f(x) f(t-x) over its breakpoints,
      at every knot and at sampled non-knot rationals, checking both the knot
      formula and linearity between knots.  This does not use the tent formula.
@@ -34,6 +36,8 @@ Usage:
 DIR must contain the files fetched by fetch.sh.  Every input file is checked
 against its pinned SHA-256 before use.  Input files are parsed as data only
 (json, or Python's ast parser for a .py source file, which is never executed).
+Exit status: 0 all claims confirmed and every integrity check passed;
+1 a claim or an integrity check failed; 2 python-flint is not importable.
 """
 
 import argparse
@@ -201,11 +205,28 @@ def autoconv_direct(a):
     return c
 
 
-def autoconv_flint(a):
+def require_flint():
+    """Return the python-flint module, or stop with exit status 2.
+
+    Check B must never be skipped silently.  Under `python3 -I` the user site
+    directory is ignored, so a `pip install --user python-flint` is invisible
+    to this script; that is the usual way to end up here."""
     try:
         import flint  # python-flint
-    except ImportError:
-        return None
+    except ImportError as exc:
+        sys.stderr.write(
+            "ERROR: python-flint is not importable by this interpreter (%s).\n"
+            "check_c1d.py requires it for check B (FLINT polynomial squaring, an\n"
+            "independent multiplication algorithm) and will not run with a check\n"
+            "skipped.  `python3 -I` ignores the user site directory, so a\n"
+            "`pip install --user python-flint` is not visible to it; install\n"
+            "python-flint where `python3 -I -c 'import flint'` succeeds.\n" % exc)
+        sys.exit(2)
+    return flint
+
+
+def autoconv_flint(a):
+    flint = require_flint()
     p = flint.fmpz_poly(a)
     q = p * p
     coeffs = [int(x) for x in q.coeffs()]
@@ -290,7 +311,7 @@ def evaluate(literals, reading, rng, n_random, quick, log):
     t0 = time.perf_counter()
     cB = autoconv_flint(a)
     tB = time.perf_counter() - t0
-    if cB is not None and cB != cA:
+    if cB != cA:
         raise AssertionError("direct and FLINT autoconvolutions differ")
     S = sum(a)
     if S == 0:
@@ -305,9 +326,7 @@ def evaluate(literals, reading, rng, n_random, quick, log):
     tC = time.perf_counter() - t0
     log("    reading=%s  N=%d  common denominator D=%s" % (
         reading, N, describe_denominator(D)))
-    log("    A direct loop: %.2fs   B FLINT: %s   agree: %s" % (
-        tA, "%.3fs" % tB if cB is not None else "not run",
-        "yes" if cB is not None else "n/a"))
+    log("    A direct loop: %.2fs   B FLINT: %.3fs   agree: yes" % (tA, tB))
     log("    C direct integration: %s (%.1fs) -> %s" % (
         "PASS" if okC else "FAIL", tC, msgC))
     s0 = argmax[0]
@@ -343,7 +362,7 @@ def selftest():
             continue
         c = autoconv_direct(a)
         cf = autoconv_flint(a)
-        assert cf is None or cf == c
+        assert cf == c
         # brute-force sup over a fine rational grid never exceeds knot max
         M = max(abs(x) for x in c)
         for k in range(0, 8 * 2 * n + 1):
@@ -364,7 +383,10 @@ def main():
     ap.add_argument("--random-points", type=int, default=200)
     ap.add_argument("--seed", type=int, default=20261103)
     args = ap.parse_args()
+    flint = require_flint()  # before anything else: never skip check B
     if args.selftest:
+        print("python %s; python-flint %s" % (sys.version.split()[0],
+                                              flint.__version__))
         selftest()
         return 0
     if not args.data:
@@ -379,12 +401,7 @@ def main():
     all_ok = True      # integrity: hashes, A == B, check C, recorded fraction
     claims = []        # (claim, confirmed?)
     t_all = time.perf_counter()
-    try:
-        import flint
-        flint_version = flint.__version__
-    except ImportError:
-        flint_version = "not installed (check B skipped)"
-    log("python %s; python-flint %s" % (sys.version.split()[0], flint_version))
+    log("python %s; python-flint %s" % (sys.version.split()[0], flint.__version__))
     for cert in CERTS:
         log("=" * 78)
         log("%s  [%s]" % (cert["name"], cert["row"]))

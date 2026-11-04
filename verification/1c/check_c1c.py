@@ -21,13 +21,20 @@ certificate authors is used.
 
 Evaluations:
   A. A_k for every 0 <= k <= K by direct summation over Python integers;
-  B. A_k as coefficients of P(x) * P_rev(x) with python-flint's fmpz_poly;
+  B. A_k as coefficients of P(x) * P_rev(x) with python-flint's fmpz_poly.
+     python-flint is REQUIRED: if it cannot be imported the script stops
+     with exit status 2 rather than skip check B (also for --selftest);
   C. g(t) by brute-force exact integration of u -> G(u) G(u + tau) over its
      breakpoints (integer arithmetic, no use of the tent formula) at sampled
      knots, including the minimising knot and its neighbours, and at random
      rational points strictly between knots (checking linearity).
 
+Where the page records the minimising knot, the computed set of minimisers
+must be exactly that one knot, or the run fails.
+
 Usage:  python3 -I check_c1c.py --data DIR [--knots N] [--interior N]
+Exit status: 0 all claims confirmed and every integrity check passed;
+1 a claim or an integrity check failed; 2 python-flint is not importable.
 """
 
 import argparse
@@ -92,11 +99,28 @@ def lags_direct(w, K):
     return [sum(map(mul, w[: n - k], w[k:])) if k < n else 0 for k in range(K + 1)]
 
 
-def lags_flint(w, K):
+def require_flint():
+    """Return the python-flint module, or stop with exit status 2.
+
+    Check B must never be skipped silently.  Under `python3 -I` the user site
+    directory is ignored, so a `pip install --user python-flint` is invisible
+    to this script; that is the usual way to end up here."""
     try:
-        import flint
-    except ImportError:
-        return None
+        import flint  # python-flint
+    except ImportError as exc:
+        sys.stderr.write(
+            "ERROR: python-flint is not importable by this interpreter (%s).\n"
+            "check_c1c.py requires it for check B (FLINT polynomial product, an\n"
+            "independent multiplication algorithm) and will not run with a check\n"
+            "skipped.  `python3 -I` ignores the user site directory, so a\n"
+            "`pip install --user python-flint` is not visible to it; install\n"
+            "python-flint where `python3 -I -c 'import flint'` succeeds.\n" % exc)
+        sys.exit(2)
+    return flint
+
+
+def lags_flint(w, K):
+    flint = require_flint()
     n = len(w)
     P = flint.fmpz_poly(w)
     Q = flint.fmpz_poly(w[::-1])       # x^(n-1) P(1/x)
@@ -176,7 +200,7 @@ def selftest():
             continue
         A = lags_direct(w, K)
         B = lags_flint(w, K)
-        assert B is None or A == B
+        assert A == B
         for k in range(K + 1):
             assert g_times_q(w, k, 0, 1) == A[k]
             if k < K:
@@ -193,18 +217,14 @@ def main():
     ap.add_argument("--interior", type=int, default=200)
     ap.add_argument("--seed", type=int, default=20261103)
     args = ap.parse_args()
+    flint = require_flint()  # before anything else: never skip check B
+    print("python %s; python-flint %s" % (sys.version.split()[0], flint.__version__))
     if args.selftest:
         selftest()
         return 0
     if not args.data:
         ap.error("--data DIR required")
     rng = random.Random(args.seed)
-    try:
-        import flint
-        fv = flint.__version__
-    except ImportError:
-        fv = "not installed (check B skipped)"
-    print("python %s; python-flint %s" % (sys.version.split()[0], fv))
     integrity, claims, t_all = True, [], time.perf_counter()
     for cert in CERTS:
         print("=" * 78)
@@ -236,13 +256,12 @@ def main():
         t0 = time.perf_counter()
         B = lags_flint(w, K)
         tB = time.perf_counter() - t0
-        if B is not None and A != B:
+        if A != B:
             print("  A and B DISAGREE")
             integrity = False
             continue
-        print("  A direct (all %d lags): %.1fs   B FLINT: %s   agree: %s" % (
-            K + 1, tA, "%.2fs" % tB if B is not None else "skipped",
-            "yes" if B is not None else "n/a"))
+        print("  A direct (all %d lags): %.1fs   B FLINT: %.2fs   agree: yes" % (
+            K + 1, tA, tB))
         S = sum(w)
         m = min(A)
         kmins = [k for k, a in enumerate(A) if a == m]
@@ -251,8 +270,12 @@ def main():
         print("  L(f) = %d/%d" % (L.numerator, L.denominator))
         print("       = %s" % decimal_digits(L))
         if cert["argmin"] is not None:
-            print("  -> argmin matches the page (k = %d): %s" % (
-                cert["argmin"], kmins == [cert["argmin"]]))
+            # enforced: the page records a unique minimiser, so the computed
+            # set of minimisers must be exactly [argmin]
+            am = kmins == [cert["argmin"]]
+            print("  -> argmin matches the page (k = %d, unique): %s" % (
+                cert["argmin"], am))
+            integrity &= am
         eq = L == Fraction(*cert["fraction"])
         print("  -> equals the exact fraction recorded on the page: %s" % eq)
         integrity &= eq
@@ -270,7 +293,7 @@ def main():
         integrity &= okC
         claims.append(("%s: C_1c >= %s" % (cert["name"], cert["bound"]), ok))
     print("=" * 78)
-    print("checker integrity (hashes, shape, A == B, check C, fractions): %s" % (
+    print("checker integrity (hashes, shape, A == B, check C, fractions, argmin): %s" % (
         "OK" if integrity else "PROBLEM"))
     for c, ok in claims:
         print("  %-55s %s" % (c, "CONFIRMED" if ok else "NOT CONFIRMED"))
