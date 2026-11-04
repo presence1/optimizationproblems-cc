@@ -1,0 +1,67 @@
+python 3.13.18; python-flint 0.9.0
+==============================================================================
+STEPS2026 (600 cells)  [constants/1d.md line 20]
+  sha256 3dd39fae744555179b0356b84e752db724e892bd23dda51403976edfb5b3a28c matches pinned value
+  600 values parsed (132 negative)
+    reading=binary64  N=600  common denominator D=2^59
+    A direct loop: 0.03s   B FLINT: 0.001s   agree: yes
+    C direct integration: PASS (4.0s) -> 1201 knots and 200 interior points agree exactly
+    max |c_s| at s=[631] (knot t=-1/2+632/1200), sign of f*f there: +; 600 knots within 1e-9 of the max
+    R(f) = 698746209786798359455483373677229695641600/478522078482569620433992386249161163190849
+         = 1.4602172840228739852488265...
+    -> equals the exact fraction recorded on the page: True
+    -> R(f) <= 1.460217284022874 (claimed bound): True, margin 1.475e-17
+    reading=decimal  N=600  common denominator D=10^18
+    A direct loop: 0.04s   B FLINT: 0.001s   agree: yes
+    C direct integration: PASS (4.1s) -> 1201 knots and 200 interior points agree exactly
+    max |c_s| at s=[631] (knot t=-1/2+632/1200), sign of f*f there: +; 600 knots within 1e-9 of the max
+    R(f) = 304211934171432018903922617723316311875/208333333333333292766666666666668641452
+         = 1.4602172840228739750723381...
+    -> R(f) <= 1.460217284022874 (claimed bound): True, margin 2.493e-17
+==============================================================================
+AER2026 C'_4 (600 cells)  [constants/1d.md line 21]
+  sha256 1a290ad1074c10a871adaf2bd44402af56be8cf151f1f775a8fc37c7bdff54b2 matches pinned value
+  600 values parsed (101 negative)
+    reading=decimal  N=600  common denominator D=10^12
+    A direct loop: 0.02s   B FLINT: 0.000s   agree: yes
+    C direct integration: PASS (4.1s) -> 1201 knots and 200 interior points agree exactly
+    max |c_s| at s=[599] (knot t=-1/2+600/1200), sign of f*f there: +; 2 knots within 1e-9 of the max
+    R(f) = 20684250041098457118804665472/14167400834233061222366701921
+         = 1.4599890469053831449525924...
+    -> R(f) <= 1.459989046905384 (claimed bound): True, margin 8.550e-16
+    reading=binary64  N=600  common denominator D=2^61
+    A direct loop: 0.03s   B FLINT: 0.000s   agree: yes
+    C direct integration: PASS (4.0s) -> 1201 knots and 200 interior points agree exactly
+    max |c_s| at s=[599] (knot t=-1/2+600/1200), sign of f*f there: +; 2 knots within 1e-9 of the max
+    R(f) = 916469474214778925354731044043533067059200/627723527212305237039091106377481433021627
+         = 1.4599890469053832431503032...
+    -> R(f) <= 1.459989046905384 (claimed bound): True, margin 7.568e-16
+==============================================================================
+CERT2026 (300 cells, registry copy)  [constants/1d.md lines 19 and 23]
+  sha256 51f864ee95205f06b98923c382d23cb3dfde5f0d4208a4c591bad015e5908a0e matches pinned value
+  300 values parsed (59 negative)
+    reading=binary64  N=300  common denominator D=2^70
+    A direct loop: 0.01s   B FLINT: 0.000s   agree: yes
+    C direct integration: PASS (1.2s) -> 601 knots and 200 interior points agree exactly
+    max |c_s| at s=[414] (knot t=-1/2+415/600), sign of f*f there: +; 1 knots within 1e-9 of the max
+    R(f) = 2039224160683882663565441886346340189798400/1393796574908163689489385839036226787118881
+         = 1.4630715826075593274614305...
+    -> equals the exact fraction recorded on the page: True
+    -> R(f) <= 1.4630715826075594 (claimed bound): True, margin 7.254e-17
+    -> R(f) <= 1.463071582607559 (superseded print, info only): False, margin -3.275e-16
+    reading=decimal  N=300  common denominator D=10^21
+    A direct loop: 0.01s   B FLINT: 0.000s   agree: yes
+    C direct integration: PASS (1.2s) -> 601 knots and 200 interior points agree exactly
+    max |c_s| at s=[414] (knot t=-1/2+415/600), sign of f*f there: +; 1 knots within 1e-9 of the max
+    R(f) = 487690527535853010710644783447064354000000/333333333333333272388666666666669452355963
+         = 1.4630715826075592996311640...
+    -> R(f) <= 1.4630715826075594 (claimed bound): True, margin 1.004e-16
+    -> R(f) <= 1.463071582607559 (superseded print, info only): False, margin -2.996e-16
+==============================================================================
+checker integrity (hashes, A == B, check C, recorded fractions): OK
+  STEPS2026 (600 cells): C_1d <= 1.460217284022874               CONFIRMED (reading: binary64, decimal)
+  AER2026 C'_4 (600 cells): C_1d <= 1.459989046905384            CONFIRMED (reading: decimal, binary64)
+  CERT2026 (300 cells, registry copy): C_1d <= 1.4630715826075594 CONFIRMED (reading: binary64, decimal)
+total runtime 18.8s
+
+# environment: Linux 6.18.44-fc-v230; x86_64; 4 cores; run 2026-11-03
