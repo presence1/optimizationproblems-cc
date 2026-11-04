@@ -97,8 +97,9 @@ for H at a point, by the injectivity in (i).
 
 ## What the scripts check
 
-Every comparison with the page is enforced: if any one disagrees, the
-checker prints `MISMATCH` and `NOT CONFIRMED` and exits with status 1. Until
+Every comparison with the page is enforced: if any one disagrees, that line
+reads `MISMATCH` (or `False`), the run ends with `NOT CONFIRMED` (`NOT ALL
+CONFIRMED` for IRSI2026), and the exit status is 1. Until
 `replay/package`, several were printed but did not affect the verdict, so a
 transfer matrix built with the wrong convention still gave CONFIRMED
 (AUDIT.md §4, mutation 49a-4). The enforced comparisons are listed below; exact

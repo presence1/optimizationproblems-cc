@@ -98,9 +98,9 @@ python3 -I verification/1d/check_c1d.py --data /some/empty/dir
 The first line of the output must read `python-flint 0.9.0` (or another
 installed version). The output of the re-run on branch `replay/package` is in
 [`run_output.txt`](run_output.txt); the original run of 3 November 2026 is in
-the git history of this file, with the same numbers. The full run takes about
-20 s on one core of an Intel Xeon @ 2.30 GHz (Python 3.13.18,
-python-flint 0.9.0). Check C accounts for almost all of that. The exact ratio
+the git history of this file, with the same numbers. The full run takes
+20–30 s on one core (18.8 s in the original run, 27.6 s in the re-run;
+Python 3.13.18, python-flint 0.9.0). Check C accounts for almost all of that. The exact ratio
 itself takes well under a second.
 
 ## Assumptions

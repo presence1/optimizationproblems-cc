@@ -1,0 +1,31 @@
+# Original (audited) checkers run with python-flint NOT importable under python3 -I
+# python 3.13.18; numpy 2.5.3; python-flint: not installed; mpmath: not installed
+# date: 2026-11-04
+
+$ python3 -I verification/1d/check_c1d.py --selftest    (verify/1d @ 04247b2)
+selftest passed
+exit=0
+
+$ python3 -I verification/1c/check_c1c.py --selftest    (verify/1c @ 1bcd744)
+selftest passed
+exit=0
+
+$ python3 -I verification/70a/check_c70.py --selftest    (verify/70a @ e957bb5)
+ModuleNotFoundError: No module named 'flint'
+exit=1
+
+$ python3 -I verification/16a/check_c16_lower.py --R 10 --skip-calibration    (verify/16a @ 4659ded)
+ModuleNotFoundError: No module named 'flint'
+exit=1
+
+$ python3 -I verification/49a/check_c49_cla2026.py    (verify/49a @ 150f084)
+ModuleNotFoundError: No module named 'flint'
+exit=1
+
+$ python3 -I verification/49a/check_c49_syl2026.py --data ROOT/data/49a/syl    (verify/49a @ 150f084)
+ModuleNotFoundError: No module named 'flint'
+exit=1
+
+$ python3 -I verification/49a/check_c49_irsi2026.py --data ROOT/data/49a/irsi    (verify/49a @ 150f084)
+ModuleNotFoundError: No module named 'flint'
+exit=1

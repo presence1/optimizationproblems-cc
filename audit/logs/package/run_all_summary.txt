@@ -1,0 +1,122 @@
+# console output of: sh audit/run_all.sh ROOT ROOT/package_logs (at 83a44c2)
+# The two mutation logs were then regenerated at 26699fc (see ENVIRONMENT.txt); their
+# SUMMARY lines are unchanged.
+ROOT/package_logs/run_16a.txt:RESULT: CONFIRMED: C_16 >= 2.1562247706
+ROOT/package_logs/run_1c.txt:selftest passed
+ROOT/package_logs/run_1c.txt:checker integrity (hashes, shape, A == B, check C, fractions, argmin): OK
+ROOT/package_logs/run_1d.txt:selftest passed
+ROOT/package_logs/run_1d.txt:checker integrity (hashes, A == B, check C, recorded fractions): OK
+ROOT/package_logs/run_49a.txt:selftest passed
+ROOT/package_logs/run_49a.txt:page cross-checks: 12 of 12 agree
+ROOT/package_logs/run_49a.txt:RESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)
+ROOT/package_logs/run_49a.txt:page cross-checks: 13 of 13 agree
+ROOT/package_logs/run_49a.txt:RESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)
+ROOT/package_logs/run_49a.txt:RESULT: all three rows CONFIRMED
+ROOT/package_logs/run_70a.txt:selftest passed
+ROOT/package_logs/run_70a.txt:RESULT: CONFIRMED: C_70 > 1.20194336 (given the criterion)
+ROOT/package_logs/c16_readings.txt:RESULT: ALL CHECKS PASSED
+ROOT/package_logs/c1_independent.txt:RESULT: ALL CHECKS PASSED
+ROOT/package_logs/c49_independent.txt:RESULT: ALL CHECKS PASSED
+ROOT/package_logs/c70_independent.txt:RESULT: ALL CHECKS PASSED
+ROOT/package_logs/mutation_tests.txt:| 49a-4 | Cla2026 (code mutation, not data): transfer matrix built with the same-status rule T[a][a'] = N_{a,a'} (wrong for XOR chains) | fail | 1 | yes (caught by the page cross-checks (matrices as printed, trace/det, 20+2sqrt(66), 1042+2sqrt(261207), printed digits), which are now enforced) |
+ROOT/package_logs/mutation_tests.txt:checker integrity (hashes, A == B, check C, recorded fractions): PROBLEM
+ROOT/package_logs/mutation_tests.txt:checker integrity (hashes, A == B, check C, recorded fractions): PROBLEM
+ROOT/package_logs/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions, argmin): PROBLEM
+ROOT/package_logs/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions, argmin): PROBLEM
+ROOT/package_logs/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions, argmin): PROBLEM
+ROOT/package_logs/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions, argmin): OK
+ROOT/package_logs/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions, argmin): PROBLEM
+ROOT/package_logs/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions, argmin): PROBLEM
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 6 of 12 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 4 of 12 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 12 of 12 agree
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 4 of 12 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 11 of 12 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 13 of 13 agree
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 13 of 13 agree
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 10 of 13 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 13 of 13 agree
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 11 of 13 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 11 of 13 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 12 of 13 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:page cross-checks: 12 of 13 agree  -> PAGE MISMATCH
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests.txt:SUMMARY: 52 of 52 tests behaved as a correct checker must
+ROOT/package_logs/mutation_tests_original_checkers.txt:| 49a-4 | Cla2026 (code mutation, not data): transfer matrix built with the same-status rule T[a][a'] = N_{a,a'} (wrong for XOR chains) | fail | 0 | **NO** (caught by the page cross-checks (matrices as printed, trace/det, 20+2sqrt(66), 1042+2sqrt(261207), printed digits), which are now enforced) |
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, A == B, check C, recorded fractions): PROBLEM
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, A == B, check C, recorded fractions): PROBLEM
+ROOT/package_logs/mutation_tests_original_checkers.txt:selftest passed
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, shape, A == B, check C, fractions): OK
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, shape, A == B, check C, fractions): OK
+ROOT/package_logs/mutation_tests_original_checkers.txt:checker integrity (hashes, shape, A == B, check C, fractions): OK
+ROOT/package_logs/mutation_tests_original_checkers.txt:selftest passed
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: NOT ALL CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: all three rows CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:RESULT: all three rows CONFIRMED
+ROOT/package_logs/mutation_tests_original_checkers.txt:SUMMARY: 39 of 52 tests behaved as a correct checker must
+
+real	21m18.954s
+user	40m43.755s
+sys	0m52.380s
+exit=0

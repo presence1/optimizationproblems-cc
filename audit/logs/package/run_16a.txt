@@ -1,0 +1,22 @@
+python 3.13.18; numpy 2.5.3; python-flint 0.9.0
+certificate sha256 de314c10bd4a63d35604d28c0d0556b8b5ae67ab1840c06628039d8fd64b6991
+certificate R and mu match the page/README: True
+[certificate] trial function: R = 4000, mu = 1221/10000; lattice points with 0 < |k|^2 <= R^2: 50265328; r2 table: Gauss count True, Jacobi check True  [12.6s]
+  A (Arb 128-bit): S0 = [9.313582031186836596224 +/- 4.28e-22]
+                   S1 = [6.294089927426438303517 +/- 5.98e-23]
+                   S2 = [24.72966505946272147999 +/- 1.20e-21]
+                   delta = [3.92902950936615 +/- 6.47e-16], L >= [2.1562247706442357903 +/- 4.29e-20]  [4s]
+  B (binary64 + fsum, rel. err <= 7.77e-16): L in [2.1562247706442 +/- 4.59e-14]  [2s]
+  A and B enclosures overlap: True
+  -> L > 10781123853/5000000000 rigorously: method A True, method B True
+  -> margin (A, lower end): [4.4236e-11 +/- 2.10e-16]
+  (info) certificate's own rational lower bound [2.156224770644234 +/- 4.78e-16] is <= A's enclosure: True
+[calibration Pat2026] mu = 5/41: R = 4000, mu = 5/41; lattice points with 0 < |k|^2 <= R^2: 50265328; r2 table: Gauss count True, Jacobi check True  [12.5s]
+  A (Arb 128-bit): S0 = [9.317263656984530731832 +/- 1.01e-22]
+                   S1 = [6.297622785935919438560 +/- 3.03e-22]
+                   S2 = [24.76105514259861260483 +/- 2.07e-21]
+                   delta = [3.93180982479546 +/- 1.35e-15], L >= [2.1562247537939133630 +/- 4.62e-20]  [4s]
+  B (binary64 + fsum, rel. err <= 7.77e-16): L in [2.1562247537939 +/- 2.40e-14]  [2s]
+  A and B enclosures overlap: True
+  -> > 2.156224 (row [Pat2026]): True
+RESULT: CONFIRMED: C_16 >= 2.1562247706

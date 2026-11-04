@@ -1,0 +1,765 @@
+[
+ {
+  "id": "1d-1",
+  "what": "STEPS2026: v[0] += 0.001, hash pin intact",
+  "cwd": "ROOT/mut_work_original/d1_code",
+  "expect": "fail",
+  "need": [
+   "MISMATCH",
+   "PROBLEM"
+  ],
+  "code": 1,
+  "secs": 1.2,
+  "ok": true,
+  "markers": true,
+  "tail": "checker integrity (hashes, A == B, check C, recorded fractions): PROBLEM\n  AER2026 C'_4 (600 cells): C_1d <= 1.459989046905384            CONFIRMED (reading: decimal, binary64)\n  CERT2026 (300 cells, registry copy): C_1d <= 1.4630715826075594 CONFIRMED (reading: binary64, decimal)\ntotal runtime 1.2s"
+ },
+ {
+  "id": "1d-2",
+  "what": "STEPS2026: v[0] += 0.001, pin updated (R rises to 1.460247269685542)",
+  "cwd": "ROOT/mut_work_original/d2_code",
+  "expect": "fail",
+  "need": [
+   "equals the exact fraction recorded on the page: False",
+   "re:C_1d <= 1\\.460217284022874\\s+NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 2.4,
+  "ok": true,
+  "markers": true,
+  "tail": "  STEPS2026 (600 cells): C_1d <= 1.460217284022874               NOT CONFIRMED\n  AER2026 C'_4 (600 cells): C_1d <= 1.459989046905384            CONFIRMED (reading: decimal, binary64)\n  CERT2026 (300 cells, registry copy): C_1d <= 1.4630715826075594 CONFIRMED (reading: binary64, decimal)\ntotal runtime 2.3s"
+ },
+ {
+  "id": "1d-3",
+  "what": "AER2026 (no recorded fraction): first literal 7.646752626269 -> 7.647752626269001, pin updated",
+  "cwd": "ROOT/mut_work_original/d3_code",
+  "expect": "fail",
+  "need": [
+   "re:C_1d <= 1\\.459989046905384\\s+NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 2.4,
+  "ok": true,
+  "markers": true,
+  "tail": "  STEPS2026 (600 cells): C_1d <= 1.460217284022874               CONFIRMED (reading: binary64, decimal)\n  AER2026 C'_4 (600 cells): C_1d <= 1.459989046905384            NOT CONFIRMED\n  CERT2026 (300 cells, registry copy): C_1d <= 1.4630715826075594 CONFIRMED (reading: binary64, decimal)\ntotal runtime 2.3s"
+ },
+ {
+  "id": "1d-4",
+  "what": "all three claimed bounds nudged just below the exact R of both readings (CERT2026: 1.4630715826075592; its decimal reading gives R = 1.46307158260755929963...)",
+  "cwd": "ROOT/mut_work_original/d4_code",
+  "expect": "fail",
+  "need": [
+   "re:C_1d <= 1\\.460217284022873\\s+NOT CONFIRMED",
+   "re:C_1d <= 1\\.4599890469053831\\s+NOT CONFIRMED",
+   "re:C_1d <= 1\\.4630715826075592\\s+NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 2.2,
+  "ok": true,
+  "markers": true,
+  "tail": "  STEPS2026 (600 cells): C_1d <= 1.460217284022873               NOT CONFIRMED\n  AER2026 C'_4 (600 cells): C_1d <= 1.4599890469053831           NOT CONFIRMED\n  CERT2026 (300 cells, registry copy): C_1d <= 1.4630715826075592 NOT CONFIRMED\ntotal runtime 2.1s"
+ },
+ {
+  "id": "1d-5",
+  "what": "STEPS2026: recorded page fraction numerator + 1",
+  "cwd": "ROOT/mut_work_original/d5_code",
+  "expect": "fail",
+  "need": [
+   "equals the exact fraction recorded on the page: False",
+   "PROBLEM"
+  ],
+  "code": 1,
+  "secs": 2.5,
+  "ok": true,
+  "markers": true,
+  "tail": "  STEPS2026 (600 cells): C_1d <= 1.460217284022874               CONFIRMED (reading: binary64, decimal)\n  AER2026 C'_4 (600 cells): C_1d <= 1.459989046905384            CONFIRMED (reading: decimal, binary64)\n  CERT2026 (300 cells, registry copy): C_1d <= 1.4630715826075594 CONFIRMED (reading: binary64, decimal)\ntotal runtime 2.5s"
+ },
+ {
+  "id": "1d-6",
+  "what": "STEPS2026: last cell dropped (599 values), pin updated",
+  "cwd": "ROOT/mut_work_original/d6_code",
+  "expect": "fail",
+  "need": [
+   "PROBLEM"
+  ],
+  "code": 1,
+  "secs": 1.6,
+  "ok": true,
+  "markers": true,
+  "tail": "checker integrity (hashes, A == B, check C, recorded fractions): PROBLEM\n  AER2026 C'_4 (600 cells): C_1d <= 1.459989046905384            CONFIRMED (reading: decimal, binary64)\n  CERT2026 (300 cells, registry copy): C_1d <= 1.4630715826075594 CONFIRMED (reading: binary64, decimal)\ntotal runtime 1.5s"
+ },
+ {
+  "id": "1d-7",
+  "what": "python-flint unavailable (python3 -I -S), full run: must stop, not skip check B",
+  "cwd": "ROOT/mut_work_original/d7_code",
+  "expect": "fail",
+  "exit_expected": 2,
+  "need": [
+   "python-flint is not importable"
+  ],
+  "nosite": true,
+  "code": 0,
+  "secs": 2.2,
+  "ok": false,
+  "markers": false,
+  "tail": "  STEPS2026 (600 cells): C_1d <= 1.460217284022874               CONFIRMED (reading: binary64, decimal)\n  AER2026 C'_4 (600 cells): C_1d <= 1.459989046905384            CONFIRMED (reading: decimal, binary64)\n  CERT2026 (300 cells, registry copy): C_1d <= 1.4630715826075594 CONFIRMED (reading: binary64, decimal)\ntotal runtime 2.1s"
+ },
+ {
+  "id": "1d-8",
+  "what": "python-flint unavailable (python3 -I -S), --selftest: must stop, not skip",
+  "cwd": "ROOT/mut_work_original/d8_code",
+  "expect": "fail",
+  "exit_expected": 2,
+  "need": [
+   "python-flint is not importable"
+  ],
+  "nosite": true,
+  "code": 0,
+  "secs": 0.2,
+  "ok": false,
+  "markers": false,
+  "tail": "selftest passed"
+ },
+ {
+  "id": "1c-1",
+  "what": "Kos2026: w[4] += 1, pin intact",
+  "cwd": "ROOT/mut_work_original/c1_code",
+  "expect": "fail",
+  "need": [
+   "MISMATCH",
+   "PROBLEM"
+  ],
+  "code": 1,
+  "secs": 0.8,
+  "ok": true,
+  "markers": true,
+  "tail": "==============================================================================\nchecker integrity (hashes, shape, A == B, check C, fractions): PROBLEM\n  R2026 (K = 6144), calibration: C_1c >= 0.4103287        CONFIRMED\ntotal runtime 1s"
+ },
+ {
+  "id": "1c-2",
+  "what": "Kos2026: w[4] += 1, pin updated (tiny change)",
+  "cwd": "ROOT/mut_work_original/c2_code",
+  "expect": "fail",
+  "need": [
+   "equals the exact fraction recorded on the page: False",
+   "PROBLEM"
+  ],
+  "code": 1,
+  "secs": 15.1,
+  "ok": true,
+  "markers": true,
+  "tail": "checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM\n  Kos2026 (K = 24576): C_1c >= 0.4103333                  CONFIRMED\n  R2026 (K = 6144), calibration: C_1c >= 0.4103287        CONFIRMED\ntotal runtime 15s"
+ },
+ {
+  "id": "1c-3",
+  "what": "Kos2026: w[5000] += 10^12 (mass added where lag 21264 cannot see it), pin updated",
+  "cwd": "ROOT/mut_work_original/c3_code",
+  "expect": "fail",
+  "need": [
+   "re:C_1c >= 0\\.4103333\\s+NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 14.8,
+  "ok": true,
+  "markers": true,
+  "tail": "checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM\n  Kos2026 (K = 24576): C_1c >= 0.4103333                  NOT CONFIRMED\n  R2026 (K = 6144), calibration: C_1c >= 0.4103287        CONFIRMED\ntotal runtime 15s"
+ },
+ {
+  "id": "1c-4",
+  "what": "claimed bound nudged to 0.41033336 (> exact 0.4103333527...)",
+  "cwd": "ROOT/mut_work_original/c4_code",
+  "expect": "fail",
+  "need": [
+   "re:C_1c >= 0\\.41033336\\s+NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 15.3,
+  "ok": true,
+  "markers": true,
+  "tail": "checker integrity (hashes, shape, A == B, check C, fractions): OK\n  Kos2026 (K = 24576): C_1c >= 0.41033336                 NOT CONFIRMED\n  R2026 (K = 6144), calibration: C_1c >= 0.4103287        CONFIRMED\ntotal runtime 15s"
+ },
+ {
+  "id": "1c-5",
+  "what": "Kos2026: one weight made negative, pin updated",
+  "cwd": "ROOT/mut_work_original/c5_code",
+  "expect": "fail",
+  "need": [
+   "negative weight"
+  ],
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "           ~~~~^^^^^^\n  File \"ROOT/mut_work_original/c5_code/check_c1c.py\", line 82, in load\n    raise ValueError(\"negative weight: f would not be non-negative\")\nValueError: negative weight: f would not be non-negative"
+ },
+ {
+  "id": "1c-6",
+  "what": "Kos2026: one weight made non-integer, pin updated",
+  "cwd": "ROOT/mut_work_original/c6_code",
+  "expect": "fail",
+  "need": [
+   "JSON integers"
+  ],
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "           ~~~~^^^^^^\n  File \"ROOT/mut_work_original/c6_code/check_c1c.py\", line 80, in load\n    raise ValueError(\"weights must be a non-empty list of JSON integers\")\nValueError: weights must be a non-empty list of JSON integers"
+ },
+ {
+  "id": "1c-7",
+  "what": "Kos2026: K changed 24576 -> 24575, pin updated",
+  "cwd": "ROOT/mut_work_original/c7_code",
+  "expect": "fail",
+  "need": [
+   "SHAPE MISMATCH",
+   "PROBLEM"
+  ],
+  "code": 1,
+  "secs": 14.4,
+  "ok": true,
+  "markers": true,
+  "tail": "checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM\n  Kos2026 (K = 24576): C_1c >= 0.4103333                  NOT CONFIRMED\n  R2026 (K = 6144), calibration: C_1c >= 0.4103287        CONFIRMED\ntotal runtime 14s"
+ },
+ {
+  "id": "1c-8",
+  "what": "recorded argmin changed 21264 -> 21265 (the minimiser must be enforced)",
+  "cwd": "ROOT/mut_work_original/c8_code",
+  "expect": "fail",
+  "need": [
+   "re:argmin matches the page \\(k = 21265[^)]*\\): False",
+   "PROBLEM"
+  ],
+  "code": 0,
+  "secs": 14.8,
+  "ok": false,
+  "markers": false,
+  "tail": "checker integrity (hashes, shape, A == B, check C, fractions): OK\n  Kos2026 (K = 24576): C_1c >= 0.4103333                  CONFIRMED\n  R2026 (K = 6144), calibration: C_1c >= 0.4103287        CONFIRMED\ntotal runtime 15s"
+ },
+ {
+  "id": "1c-9",
+  "what": "python-flint unavailable (python3 -I -S), full run: must stop, not skip check B",
+  "cwd": "ROOT/mut_work_original/c9_code",
+  "expect": "fail",
+  "exit_expected": 2,
+  "need": [
+   "python-flint is not importable"
+  ],
+  "nosite": true,
+  "code": 0,
+  "secs": 14.9,
+  "ok": false,
+  "markers": false,
+  "tail": "checker integrity (hashes, shape, A == B, check C, fractions): OK\n  Kos2026 (K = 24576): C_1c >= 0.4103333                  CONFIRMED\n  R2026 (K = 6144), calibration: C_1c >= 0.4103287        CONFIRMED\ntotal runtime 15s"
+ },
+ {
+  "id": "1c-10",
+  "what": "python-flint unavailable (python3 -I -S), --selftest: must stop, not skip",
+  "cwd": "ROOT/mut_work_original/c10_code",
+  "expect": "fail",
+  "exit_expected": 2,
+  "need": [
+   "python-flint is not importable"
+  ],
+  "nosite": true,
+  "code": 0,
+  "secs": 0.0,
+  "ok": false,
+  "markers": false,
+  "tail": "selftest passed"
+ },
+ {
+  "id": "70a-1",
+  "what": "claim nudged to 1.2019433685 (> R = 1.20194336844...)",
+  "cwd": "ROOT/mut_work_original/70a-1_code",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "  (info) k = 367879441170: R = [1.201943368443150566995 +/- 2.29e-22]\n  (info) k = 367879441174: R = [1.201943368443150566995 +/- 1.73e-22]\n  (info) exp(1/(2e)) = [1.20194336847031446719424113938 +/- 1.30e-30]; > 120194336847/100000000000: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "70a-2",
+  "what": "claim set to the limit's printed value 1.20194336847 (the finite R is below it)",
+  "cwd": "ROOT/mut_work_original/70a-2_code",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "  (info) k = 367879441170: R = [1.201943368443150566995 +/- 2.29e-22]\n  (info) k = 367879441174: R = [1.201943368443150566995 +/- 1.73e-22]\n  (info) exp(1/(2e)) = [1.20194336847031446719424113938 +/- 1.30e-30]; > 120194336847/100000000000: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "70a-3",
+  "what": "retained term k = 3*10^11 instead of 367879441172 (R = 1.19793...)",
+  "cwd": "ROOT/mut_work_original/70a-3_code",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "  (info) k = 299999999998: R = [1.197931022262398170423 +/- 1.47e-22]\n  (info) k = 300000000002: R = [1.197931022262886861123 +/- 9.05e-23]\n  (info) exp(1/(2e)) = [1.20194336847031446719424113938 +/- 1.30e-30]; > 120194336847/100000000000: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "70a-4",
+  "what": "certificate JSON: n changed",
+  "cwd": "ROOT/mut_work_original/70a-4_code",
+  "expect": "fail",
+  "need": [
+   "certificate parameters match the constant page: False",
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "  (info) k = 367879441170: R = [1.201943368443150566995 +/- 2.29e-22]\n  (info) k = 367879441174: R = [1.201943368443150566995 +/- 1.73e-22]\n  (info) exp(1/(2e)) = [1.20194336847031446719424113938 +/- 1.30e-30]; > 120194336847/100000000000: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "70a-5",
+  "what": "certificate JSON: normalized side changed",
+  "cwd": "ROOT/mut_work_original/70a-5_code",
+  "expect": "fail",
+  "need": [
+   "certificate parameters match the constant page: False",
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "  (info) k = 367879441170: R = [1.201943368443150566995 +/- 2.29e-22]\n  (info) k = 367879441174: R = [1.201943368443150566995 +/- 1.73e-22]\n  (info) exp(1/(2e)) = [1.20194336847031446719424113938 +/- 1.30e-30]; > 120194336847/100000000000: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "70a-6",
+  "what": "python-flint and mpmath unavailable (python3 -I -S): must stop",
+  "cwd": "ROOT/mut_work_original/70a-6_code",
+  "expect": "fail",
+  "need": [
+   "ModuleNotFoundError"
+  ],
+  "nosite": true,
+  "code": 1,
+  "secs": 0.0,
+  "ok": true,
+  "markers": true,
+  "tail": "             ~~~~^^\n  File \"ROOT/mut_work_original/70a-6_code/check_c70.py\", line 174, in main\n    import flint\nModuleNotFoundError: No module named 'flint'"
+ },
+ {
+  "id": "16a-1",
+  "what": "claim nudged to 2.1562247707 (> L_trial = 2.15622477064...)",
+  "cwd": "ROOT/mut_work_original/s1_code",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 17.4,
+  "ok": true,
+  "markers": true,
+  "tail": "  A and B enclosures overlap: True\n  -> L > 21562247707/10000000000 rigorously: method A False, method B False\n  -> margin (A, lower end): [-5.5764e-11 +/- 2.10e-16]\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "16a-2",
+  "what": "trial function cut off at |k| <= 1000 instead of 4000 (no JSON)",
+  "cwd": "ROOT/mut_work_original/s2_code",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 1.3,
+  "ok": true,
+  "markers": true,
+  "tail": "  A and B enclosures overlap: True\n  -> L > 10781123853/5000000000 rigorously: method A False, method B False\n  -> margin (A, lower end): [-1.1362e-5 +/- 4.42e-10]\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "16a-3",
+  "what": "r2 table corrupted (code mutation): lattice points (+-7, 0) dropped",
+  "cwd": "ROOT/mut_work_original/s3_code",
+  "expect": "fail",
+  "need": [
+   "Gauss count False",
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 17.1,
+  "ok": true,
+  "markers": true,
+  "tail": "  A and B enclosures overlap: True\n  -> L > 10781123853/5000000000 rigorously: method A False, method B False\n  -> margin (A, lower end): [-0.0013758 +/- 2.77e-8]\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "16a-4",
+  "what": "certificate JSON: mu changed to 1222/10000",
+  "cwd": "ROOT/mut_work_original/s4_code",
+  "expect": "fail",
+  "need": [
+   "certificate R and mu match the page/README: False",
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 16.5,
+  "ok": true,
+  "markers": true,
+  "tail": "  -> L > 10781123853/5000000000 rigorously: method A True, method B True\n  -> margin (A, lower end): [4.4236e-11 +/- 2.10e-16]\n  (info) certificate's own rational lower bound [2.156224770644234 +/- 4.78e-16] is <= A's enclosure: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "16a-5",
+  "what": "numpy and python-flint unavailable (python3 -I -S): must stop",
+  "cwd": "ROOT/mut_work_original/s5_code",
+  "expect": "fail",
+  "need": [
+   "ModuleNotFoundError"
+  ],
+  "nosite": true,
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "Traceback (most recent call last):\n  File \"ROOT/mut_work_original/s5_code/check_c16_lower.py\", line 43, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'"
+ },
+ {
+  "id": "49a-1",
+  "what": "Cla2026: F loses one chair complement (74 sets)",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/l1_code",
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "   rho = (2069 + sqrt(4103773))/2 = 1042 + 2 sqrt(261207): False\n   rho^(1/17) = [1.5659449359727243328 +/- 2.54e-20]\n   -> C_49 >= 1.5666969 (row 78): False\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "49a-2",
+  "what": "Cla2026: F plus one set C=0b1010011011 forming a sunflower with 0b10111101, 0b111011001 (Sperner kept)",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/l2_code",
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "   rho = (2115 + sqrt(4285401))/2 = 1042 + 2 sqrt(261207): False\n   rho^(1/17) = [1.5679564696561223660 +/- 4.13e-20]\n   -> C_49 >= 1.5666969 (row 78): True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "49a-3",
+  "what": "Cla2026: claim 1.5664286 nudged to 1.5664287 (> rho^(1/8) = 1.56642866...)",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/l3_code",
+  "code": 1,
+  "secs": 0.1,
+  "ok": true,
+  "markers": true,
+  "tail": "   rho = (2084 + sqrt(4179312))/2 = 1042 + 2 sqrt(261207): True\n   rho^(1/17) = [1.5666969787543153309 +/- 2.33e-20]\n   -> C_49 >= 1.5666969 (row 78): True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "49a-4",
+  "what": "Cla2026 (code mutation, not data): transfer matrix built with the same-status rule T[a][a'] = N_{a,a'} (wrong for XOR chains)",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/l4_code",
+  "note": "caught by the page cross-checks (matrices as printed, trace/det, 20+2sqrt(66), 1042+2sqrt(261207), printed digits), which are now enforced",
+  "code": 0,
+  "secs": 0.1,
+  "ok": false,
+  "markers": false,
+  "tail": "   rho = (2461 + sqrt(5892777))/2 = 1042 + 2 sqrt(261207): False\n   rho^(1/17) = [1.5823505636737190121 +/- 1.51e-20]\n   -> C_49 >= 1.5666969 (row 78): True\nRESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)"
+ },
+ {
+  "id": "49a-16",
+  "what": "Cla2026: recorded determinant of the page's product matrix changed (641 -> 642 in 980*1104 - 1624*641)",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/l16_code",
+  "code": 0,
+  "secs": 0.1,
+  "ok": false,
+  "markers": false,
+  "tail": "   rho = (2084 + sqrt(4179312))/2 = 1042 + 2 sqrt(261207): True\n   rho^(1/17) = [1.5666969787543153309 +/- 2.33e-20]\n   -> C_49 >= 1.5666969 (row 78): True\nRESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)"
+ },
+ {
+  "id": "49a-5",
+  "what": "Syl2026 B': one extra set replaced (same port statuses, no H-point) by a set that closes a sunflower; pin intact",
+  "cwd": "ROOT/mut_work_original/y1_code",
+  "expect": "fail",
+  "need": [
+   "MISMATCH",
+   "NOT CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 2.5,
+  "ok": true,
+  "markers": true,
+  "tail": "        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1127, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): True\n        rho = [2089.0478158594821112 +/- 1.99e-17] = 1127 + sqrt(925536): True; rho^(1/17) = [1.5678015201687483405 +/- 2.98e-20]\n        -> C_49 >= 1.5678015: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "49a-6",
+  "what": "Syl2026 B': same replacement, pin updated",
+  "expect": "fail",
+  "need": [
+   "FOUND",
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/y2_code",
+  "code": 1,
+  "secs": 2.5,
+  "ok": true,
+  "markers": true,
+  "tail": "        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1127, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): True\n        rho = [2089.0478158594821112 +/- 1.99e-17] = 1127 + sqrt(925536): True; rho^(1/17) = [1.5678015201687483405 +/- 2.98e-20]\n        -> C_49 >= 1.5678015: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "49a-7",
+  "what": "Syl2026 B': one of the 15 extra sets deleted (4363 sets), pin updated",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/y3_code",
+  "code": 1,
+  "secs": 10.7,
+  "ok": true,
+  "markers": true,
+  "tail": "        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1126, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): False\n        rho = [2088.5479457906450933 +/- 4.80e-17] = 1127 + sqrt(925536): False; rho^(1/17) = [1.5677794502964717993 +/- 1.21e-21]\n        -> C_49 >= 1.5678015: False\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "49a-8",
+  "what": "Syl2026: claim 1.5678015 nudged to 1.5678016",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/y4_code",
+  "code": 1,
+  "secs": 10.3,
+  "ok": true,
+  "markers": true,
+  "tail": "        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1127, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): True\n        rho = [2089.0478158594821112 +/- 1.99e-17] = 1127 + sqrt(925536): True; rho^(1/17) = [1.5678015201687483405 +/- 2.98e-20]\n        -> C_49 >= 1.5678015: False\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "49a-9",
+  "what": "Syl2026 row 79: recorded N00 changed by +1",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/y5_code",
+  "code": 1,
+  "secs": 10.5,
+  "ok": true,
+  "markers": true,
+  "tail": "        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1127, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): True\n        rho = [2089.0478158594821112 +/- 1.99e-17] = 1127 + sqrt(925536): True; rho^(1/17) = [1.5678015201687483405 +/- 2.98e-20]\n        -> C_49 >= 1.5678015: True\nRESULT: NOT CONFIRMED"
+ },
+ {
+  "id": "49a-17",
+  "what": "Syl2026 row 80 (code mutation): B' transfer matrix built with the same-status rule (rho rises to about 2262; the bound would still pass)",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/y6_code",
+  "code": 0,
+  "secs": 9.7,
+  "ok": false,
+  "markers": false,
+  "tail": "        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1127, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): True\n        rho = [2262.3185163824830530 +/- 1.35e-17] = 1127 + sqrt(925536): False; rho^(1/17) = [1.5751673137138090883 +/- 4.09e-20]\n        -> C_49 >= 1.5678015: True\nRESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)"
+ },
+ {
+  "id": "49a-18",
+  "what": "Syl2026 row 79: recorded gadget count changed (152351 -> 152352)",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/y7_code",
+  "code": 0,
+  "secs": 10.6,
+  "ok": false,
+  "markers": false,
+  "tail": "        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1127, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): True\n        rho = [2089.0478158594821112 +/- 1.99e-17] = 1127 + sqrt(925536): True; rho^(1/17) = [1.5678015201687483405 +/- 2.98e-20]\n        -> C_49 >= 1.5678015: True\nRESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)"
+ },
+ {
+  "id": "49a-19",
+  "what": "Syl2026 row 80 (code mutation): H-part mask widened to all 19 points, so 'the 15 extra sets avoid H' must fail",
+  "expect": "fail",
+  "need": [
+   "NOT CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/y8_code",
+  "code": 0,
+  "secs": 10.2,
+  "ok": false,
+  "markers": false,
+  "tail": "        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1127, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): True\n        rho = [2089.0478158594821112 +/- 1.99e-17] = 1127 + sqrt(925536): True; rho^(1/17) = [1.5678015201687483405 +/- 2.98e-20]\n        -> C_49 >= 1.5678015: True\nRESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)"
+ },
+ {
+  "id": "49a-10",
+  "what": "IRSI v1.0 (no hash on the page): one set replaced, same port statuses, closing a sunflower (Sperner kept), pin updated",
+  "cwd": "ROOT/mut_work_original/49a-10_code",
+  "expect": "fail",
+  "need": [
+   "FOUND",
+   "NOT ALL CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 51.5,
+  "ok": true,
+  "markers": true,
+  "tail": "   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True\n   x^2 - 3901x + 2333844, rho = [3163.18555281243 +/- 4.56e-12], rho^(1/18) = [1.56477309608283130 +/- 7.90e-19]; > 1.5647730: True\n   -> CONFIRMED (given the XOR-gluing lemma)\nRESULT: NOT ALL CONFIRMED"
+ },
+ {
+  "id": "49a-11",
+  "what": "IRSI v1.0: one set duplicated, pin updated",
+  "cwd": "ROOT/mut_work_original/49a-11_code",
+  "expect": "fail",
+  "need": [
+   "distinct: False",
+   "NOT ALL CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 52.1,
+  "ok": true,
+  "markers": true,
+  "tail": "   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True\n   x^2 - 3901x + 2333844, rho = [3163.18555281243 +/- 4.56e-12], rho^(1/18) = [1.56477309608283130 +/- 7.90e-19]; > 1.5647730: True\n   -> CONFIRMED (given the XOR-gluing lemma)\nRESULT: NOT ALL CONFIRMED"
+ },
+ {
+  "id": "49a-12",
+  "what": "IRSI v1.0: a set replaced by a strict superset of another member, pin updated",
+  "cwd": "ROOT/mut_work_original/49a-12_code",
+  "expect": "fail",
+  "need": [
+   "Sperner: False",
+   "NOT ALL CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 51.0,
+  "ok": true,
+  "markers": true,
+  "tail": "   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True\n   x^2 - 3901x + 2333844, rho = [3163.18555281243 +/- 4.56e-12], rho^(1/18) = [1.56477309608283130 +/- 7.90e-19]; > 1.5647730: True\n   -> CONFIRMED (given the XOR-gluing lemma)\nRESULT: NOT ALL CONFIRMED"
+ },
+ {
+  "id": "49a-13",
+  "what": "IRSI v1.0: port u changed 18 -> 17, pin updated",
+  "cwd": "ROOT/mut_work_original/49a-13_code",
+  "expect": "fail",
+  "need": [
+   "[[1884, 1360], [1081, 1802]]: False",
+   "NOT ALL CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 72.9,
+  "ok": true,
+  "markers": true,
+  "tail": "   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True\n   x^2 - 3901x + 2333844, rho = [3163.18555281243 +/- 4.56e-12], rho^(1/18) = [1.56477309608283130 +/- 7.90e-19]; > 1.5647730: True\n   -> CONFIRMED (given the XOR-gluing lemma)\nRESULT: NOT ALL CONFIRMED"
+ },
+ {
+  "id": "49a-14",
+  "what": "IRSI v1.0: claim 1.5617847 nudged to 1.5617848, pin updated",
+  "cwd": "ROOT/mut_work_original/49a-14_code",
+  "expect": "fail",
+  "need": [
+   "NOT ALL CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 74.2,
+  "ok": true,
+  "markers": true,
+  "tail": "   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True\n   x^2 - 3901x + 2333844, rho = [3163.18555281243 +/- 4.56e-12], rho^(1/18) = [1.56477309608283130 +/- 7.90e-19]; > 1.5647730: True\n   -> CONFIRMED (given the XOR-gluing lemma)\nRESULT: NOT ALL CONFIRMED"
+ },
+ {
+  "id": "49a-15",
+  "what": "IRSI v1.2 (pinned): last set removed, pin intact",
+  "cwd": "ROOT/mut_work_original/49a-15_code",
+  "expect": "fail",
+  "need": [
+   "MISMATCH",
+   "NOT ALL CONFIRMED"
+  ],
+  "code": 1,
+  "secs": 73.1,
+  "ok": true,
+  "markers": true,
+  "tail": "   port matrix [[1993, 1359], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: False\n   x^2 - 3901x + 2334924, rho = [3162.74017834751 +/- 1.18e-12], rho^(1/18) = [1.56476085532269415 +/- 1.02e-18]; > 1.5647730: False\n   -> NOT CONFIRMED\nRESULT: NOT ALL CONFIRMED"
+ },
+ {
+  "id": "49a-20",
+  "what": "IRSI v1.1: recorded characteristic polynomial changed (det 1969416 -> 1969417)",
+  "expect": "fail",
+  "need": [
+   "NOT ALL CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/49a-20_code",
+  "na": "N/A: check absent (patch target not found: check_c49_irsi2026.py: '\"v11_s17.json\": (3710, 1969416)')",
+  "code": "-",
+  "secs": 0.0,
+  "ok": false,
+  "markers": false,
+  "note": "N/A: check absent (patch target not found: check_c49_irsi2026.py: '\"v11_s17.json\": (3710, 1969416)')",
+  "tail": "(not run: N/A: check absent (patch target not found: check_c49_irsi2026.py: '\"v11_s17.json\": (3710, 1969416)'))"
+ },
+ {
+  "id": "49a-21",
+  "what": "IRSI (code mutation): trace and determinant taken with the same-status rule (rho rises; the bounds would still pass)",
+  "expect": "fail",
+  "need": [
+   "NOT ALL CONFIRMED"
+  ],
+  "cwd": "ROOT/mut_work_original/49a-21_code",
+  "code": 0,
+  "secs": 74.7,
+  "ok": false,
+  "markers": false,
+  "tail": "   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True\n   x^2 - 2440x + -2333844, rho = [3175.05600942786 +/- 2.92e-12], rho^(1/18) = [1.56509874766644379 +/- 4.60e-18]; > 1.5647730: True\n   -> CONFIRMED (given the XOR-gluing lemma)\nRESULT: all three rows CONFIRMED"
+ },
+ {
+  "id": "49a-22",
+  "what": "IRSI v1.0 re-serialised (same content, different bytes), pin intact: the replay must check the bytes it cites",
+  "cwd": "ROOT/mut_work_original/49a-22_code",
+  "expect": "fail",
+  "need": [
+   "MISMATCH",
+   "NOT ALL CONFIRMED"
+  ],
+  "code": 0,
+  "secs": 75.3,
+  "ok": false,
+  "markers": false,
+  "tail": "   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True\n   x^2 - 3901x + 2333844, rho = [3163.18555281243 +/- 4.56e-12], rho^(1/18) = [1.56477309608283130 +/- 7.90e-19]; > 1.5647730: True\n   -> CONFIRMED (given the XOR-gluing lemma)\nRESULT: all three rows CONFIRMED"
+ },
+ {
+  "id": "49a-23",
+  "what": "python-flint and numpy unavailable (python3 -I -S): Syl2026 must stop",
+  "cwd": "ROOT/mut_work_original/49a-23_code",
+  "expect": "fail",
+  "need": [
+   "ModuleNotFoundError"
+  ],
+  "nosite": true,
+  "code": 1,
+  "secs": 0.0,
+  "ok": true,
+  "markers": true,
+  "tail": "             ~~~~^^\n  File \"ROOT/mut_work_original/49a-23_code/check_c49_syl2026.py\", line 121, in main\n    from flint import arb, ctx\nModuleNotFoundError: No module named 'flint'"
+ }
+]

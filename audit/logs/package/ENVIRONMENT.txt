@@ -1,0 +1,22 @@
+Environment of the replay/package re-run (4 November 2026)
+uname: Linux 6.18.44-fc-v233 x86_64
+cores: 4
+python 3.13.18
+numpy 2.5.3
+python-flint 0.9.0
+mpmath 1.4.1
+libraries installed system-wide (pip --break-system-packages), so that python3 -I can import them;
+python3 -I -S hides them (used by the mutation tests that simulate a missing python-flint)
+
+Code under test: replay/package.
+  - run_all.sh (every checker, the independent checks, both mutation runs) at 83a44c21d4d18d239b8a2a78707602751fdd3275.
+  - The two mutation runs were then repeated at 26699fca77b8c87e6e9062940ff344df0eb22858, whose only change is that
+    audit/mutation_tests.py prints a test's note only when the test behaved correctly.
+    No checker changed. mutation_tests*.txt and mutation_results*.json are from that run
+    (2026-11-04T09:12:18Z to 2026-11-04T09:22:44Z).
+Original checkers for the comparison: verify/1d 04247b2, verify/1c 1bcd744, verify/70a e957bb5,
+verify/16a 4659ded, verify/49a 150f084 (extracted by audit/fetch_all.sh from this repository's history)
+run_all.sh started 2026-11-04T08:50:21Z, finished 2026-11-04T09:11:40Z
+
+In the logs, ROOT stands for the scratch directory filled by audit/fetch_all.sh, and REPO for the
+checkout of replay/package.

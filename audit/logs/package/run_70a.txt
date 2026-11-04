@@ -1,0 +1,18 @@
+python 3.13.18; python-flint 0.9.0; mpmath 1.4.1
+selftest passed
+python 3.13.18; python-flint 0.9.0; mpmath 1.4.1
+certificate ROOT/data/70a/c70-certificate/certificates/c70_candidate.json sha256 03ff0d6df3dfa6ea06f901a9319c968eb7c013f5d0cc3f1f00cfa58e9490c0cc
+certificate parameters match the constant page: True
+n = 1000000000000, k = 367879441172, t = k/n = 91969860293/250000000000, a/kappa_n^(1/n) = (n-k)/k = 632120558828/367879441172
+claim: R > 3756073/3125000 = 3756073/3125000
+method 1 (Arb, 256 bits, literal criterion): R in [1.2019433684431505669948027797355241 +/- 3.79e-35]  [0.00s]
+  -> 3756073/3125000 < R rigorously: True
+method 2 (mpmath.iv, 60 digits, Robbins bounds): R in [1.201943368443150566994802779735524137829, 1.201943368443150566994802779735524138179]  [0.00s]
+  -> 3756073/3125000 < R rigorously: True
+  methods 1 and 2 enclosures overlap: True (method 2 width 3.5e-37)
+  (info) k = 367879441170: R = [1.201943368443150566995 +/- 2.29e-22]
+  (info) k = 367879441174: R = [1.201943368443150566995 +/- 1.73e-22]
+  (info) exp(1/(2e)) = [1.20194336847031446719424113938 +/- 1.30e-30]; > 120194336847/100000000000: True
+calibration: full Steiner sum, n = 300000, a = 13/1000: R = [1.201927142572502844960989 +/- 3.27e-26]  [4.5s]
+  -> > 1.201927 (Patankar's row [Pat2026]): True
+RESULT: CONFIRMED: C_70 > 1.20194336 (given the criterion)

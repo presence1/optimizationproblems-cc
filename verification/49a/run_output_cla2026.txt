@@ -1,5 +1,5 @@
-# python3 -I verification/49a/check_c49_cla2026.py --selftest && python3 -I verification/49a/check_c49_cla2026.py
-selftest: 327 random gluings of Sperner sunflower-free families; failures by rule: {'xor': 0, 'same-keep': 0, 'same-drop': 276} (control 'same-drop' is expected to fail)
+# command: python3 -I verification/49a/check_c49_cla2026.py --selftest && python3 -I verification/49a/check_c49_cla2026.py
+selftest: 327 random gluings of Sperner sunflower-free families; goodness failures by rule: {'xor': 0, 'same-keep': 0, 'same-drop': 276} (control 'same-drop' is expected to fail); XOR gluings where two pairs gave the same member: 0
 selftest passed
 F: 75 sets on 10 points {'stars': 5, 'k23': 10, 'chair_complements': 60}, set sizes [4, 6]
    Sperner: True; 3-sunflowers among all 67525 triples: 0
@@ -7,13 +7,24 @@ F: 75 sets on 10 points {'stars': 5, 'k23': 10, 'chair_complements': 60}, set si
 H: 121 sets on 11 points {'orbits': [55, 55, 11]}, set sizes [5, 7]
    Sperner: True; 3-sunflowers among all 287980 triples: 0
    port counts (N00, N01, N10, N11) over all ordered port pairs: [(15, 31, 31, 44)]
-port counts match the page's rows (20,24),(11,20) and (31,44),(15,31): True
-F chain: T = [[20, 11], [24, 20]], x^2 - 40x + 136, rho = (40 + sqrt(1056))/2 = 20 + 2 sqrt(66): True
+   page check: F port counts: rows (20,24),(11,20) [row 77]                                     OK
+   page check: H port counts: rows (31,44),(15,31) [row 78]                                     OK
+   page check: points added per copy of F = 8 [row 77]                                          OK
+   page check: points added per period F, H = 17 [row 78]                                       OK
+   page check: transfer matrix of F, as printed (transposed): rows (20,24),(11,20)              OK
+   page check: transfer matrix of H, as printed (transposed): rows (31,44),(15,31)              OK
+F chain: T = [[20, 11], [24, 20]], x^2 - 40x + 136, rho = (40 + sqrt(1056))/2
+   page check: rho_F = 20 + 2 sqrt(66), i.e. trace 40 and discriminant 1056 [row 77]            OK
    rho^(1/8) = [1.5664286622500366604 +/- 1.04e-20]
+   page check: rho_F^(1/8) < 1.5664287, as the printed digits 1.5664286... say [row 77]         OK
    -> C_49 >= 1.5664286 (row 77): True
-F,H alternating: T_F T_H = [[1104, 641], [1624, 980]], x^2 - 2084x + 40936; page's matrix rows (980,1624),(641,1104) has the same trace/det: True
-   rho = (2084 + sqrt(4179312))/2 = 1042 + 2 sqrt(261207): True
+F,H alternating: T_F T_H = [[1104, 641], [1624, 980]], x^2 - 2084x + 40936, rho = (2084 + sqrt(4179312))/2
+   page check: product as printed, T_F^t T_H^t: rows (980,1624),(641,1104) [row 78]             OK
+   page check: T_F T_H has the trace and determinant of the printed product                     OK
+   page check: rho = 1042 + 2 sqrt(261207), i.e. trace 2084, discriminant 16*261207             OK
    rho^(1/17) = [1.5666969787543153309 +/- 2.33e-20]
+   page check: rho^(1/17) < 1.5666970, as the printed digits 1.5666969... say [row 78]          OK
    -> C_49 >= 1.5666969 (row 78): True
+page cross-checks: 12 of 12 agree
 RESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)
-# environment: Linux 6.18.44-fc-v230; Intel Xeon @ 2.30GHz; run 2026-11-03
+# environment: Linux 6.18.44-fc-v233; 4 cores; run 2026-11-04 on replay/package @ 83a44c2

@@ -37,9 +37,9 @@ the fork owner; the 2013 journal version was not seen) states the inequality
 in Theorem 3.8 "for all 2π × 2π-periodic functions u with zero mean", and
 defines L := max_{δ≥1} {4πΘ(δ) − (log δ + log(1 + log δ))} in (3.20). The
 phrase "with sufficiently large frequency ratio" is not in the source. The
-page's other rows, the upper-bound certificate (a branch-and-bound over
-δ ∈ [1, ∞)) and BDZ2013's maximiser δ* ≈ 3.93 all presuppose the second
-reading as well. So the bound stands for the constant as the source defines
+page's [Pat2026] row (a trial function at δ ≈ 3.93), BDZ2013's maximiser
+δ* ≈ 3.93 in the upper-bound table, and the upper-bound certificate (a
+branch-and-bound over δ ∈ [1, ∞)) all presuppose the second reading as well. So the bound stands for the constant as the source defines
 it, and the page's first sentence needs correcting. Which reading the
 maintainer intends is for the maintainer to say; this replay has not asked
 (see `SUBMISSION_NOTES.md`).
