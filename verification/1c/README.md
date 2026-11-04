@@ -40,8 +40,11 @@ argument the page cites ([K2021], Thm 3.1).
 
 ## What the checker does
 
-`check_c1c.py` runs on the standard library, plus optional python-flint for
-check B.
+`check_c1c.py` runs on the standard library plus python-flint, which is
+required for check B. If python-flint cannot be imported, the checker stops
+with exit status 2 and says why; it never skips check B. (Until
+`replay/package` it skipped check B silently in that case, exactly like the
+1d checker; AUDIT.md §2 described that trap for 1d only.)
 
 1. It checks SHA-256 against the value on the page, which matches. It then
    parses the JSON and requires `weights_int` to be JSON integers, all ≥ 0 and
@@ -59,8 +62,12 @@ check B.
    A_k, and at 2000 random rationals strictly between knots, where it must
    equal the linear interpolation. The points include the minimising knot,
    its neighbours, and t = 0 and t = 1. All agree exactly.
-5. L(f) is formed as an exact fraction and compared with the recorded fraction
-   (equal), with the recorded minimiser (equal), and exactly with 0.4103333.
+5. L(f) is formed as an exact fraction and compared with the recorded
+   fraction, with the recorded minimiser (k = 21264 must be the only
+   minimiser), and exactly with 0.4103333. All three comparisons are enforced:
+   any mismatch fails the run. All three agree. (Until `replay/package` the
+   minimiser comparison was printed but not enforced; AUDIT.md §4,
+   mutation 1c-8.)
 6. `--selftest` checks hand cases: 1_{[0,1)} gives 0, 1_{[0,2)} gives 1/4, and
    the ruler {0,1,4,6} gives the page's 3/8. It also checks A = B = brute force
    on 30 random small cases.
@@ -81,7 +88,10 @@ python3 -I verification/1c/check_c1c.py --data /some/empty/dir --knots 24577 --i
 
 The default `--knots 400 --interior 200` run takes about 17 s. Of that,
 check A takes 10 s and FLINT takes 0.03 s. The full run's timing is in
-`run_output.txt`. Hardware: one core of an Intel Xeon @ 2.30 GHz,
+`run_output.txt`, which is the re-run on branch `replay/package`; the
+original run of 3 November 2026 is in the git history of this file, with the
+same numbers. The first output line must read `python-flint 0.9.0` (or
+another installed version). Hardware: one core of an Intel Xeon @ 2.30 GHz,
 Python 3.13.18, python-flint 0.9.0.
 
 ## Assumptions
@@ -105,3 +115,22 @@ working for the owner of this fork. The page notes that the certificate itself
 was found and checked with Claude agents too, so this replay is independent of
 the authors' code but not of the AI tooling. Whether it counts as a second
 party is for a maintainer to decide.
+
+## Related upstream work
+
+Upstream pull request
+[#292](https://github.com/teorth/optimizationproblems/pull/292) (open, with no
+comments, when the audit was written) already posts a replay of this
+certificate and keeps the asterisk "pending a second party" (AUDIT.md §6.2).
+The verification here does not refer to #292, and nobody here has compared it
+with #292's code.
+
+## Corrections made on branch `replay/package` (4 November 2026)
+
+- The recorded minimiser is now enforced, not just printed (AUDIT.md §4,
+  mutation 1c-8; §5, item 6). Mutation test 1c-8 now expects failure.
+- `check_c1c.py` now requires python-flint and stops with exit status 2
+  without it, instead of skipping check B silently. The audit missed this
+  (it said the checkers other than 1d fail loudly); a run without
+  python-flint showed it. Mutation tests 1c-9 and 1c-10 check it.
+- Added the note on upstream #292 (AUDIT.md §5, item 11).

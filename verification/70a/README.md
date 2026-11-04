@@ -55,7 +55,10 @@ paper's eq. (factorial). Stirling's formula gives log R_{n,k} → −(t/2) log t
 which is maximised at t = 1/e with value 1/(2e).
 
 Steps 2–4 are elementary and I checked them line by line. Step 1 and Steiner's
-formula are classical results that I used without re-proving.
+formula are classical results that I used without re-proving. The audit
+(AUDIT.md §3.3, another Claude session) later re-derived step 1 from the
+external-angle formula and tested steps 1–4 numerically; no human has
+reviewed the argument.
 
 ## What the checker does
 
@@ -103,7 +106,11 @@ no file hash, only the commit. The checker only reads the four parameters and
 compares them with the page. Runtime is under 0.1 s for the bound itself and
 3.6 s including the n = 300000 calibration sum, on Python 3.13.18,
 python-flint 0.9.0 and mpmath 1.4.1. The run is in
-[`run_output.txt`](run_output.txt).
+[`run_output.txt`](run_output.txt); it is the re-run on branch
+`replay/package` (the checker itself is unchanged there; the original run of
+3 November 2026 is in the git history of this file, with the same numbers).
+Without python-flint or mpmath the checker stops with an import error; it
+never skips a check.
 
 ## Assumptions
 

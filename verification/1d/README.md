@@ -12,7 +12,7 @@ R(f) = max_t |(f∗f)(t)| / (∫f)².
 | line 20, [STEPS2026] | C_1d ≤ 1.460217284022874* | 600-cell step function, `construction.json` @ `9a09149` | **Confirmed.** R(f) is exactly the fraction recorded on the page, 1.46021728402287398524…, which is below the printed bound by 1.5·10⁻¹⁷ |
 | line 21, [AER2026] | C_1d ≤ 1.459989046905384* | 600-cell step function `STEP_FUNCTION_C4_PRIME_N600` @ `4b3bbd2` | **Confirmed.** R(f) = 1.45998904690538314495… when the printed decimals are read exactly, and 1.45998904690538324315… when they are read as binary64. Both are below the printed bound |
 | line 22, [SCIEL2026] | C_1d ≤ 1.457854884921989* | 800-cell step function on Zenodo | **Not checked.** The page says the Zenodo record is restricted (files on request), and zenodo.org is blocked from this session anyway. I had no access to the data |
-| line 19, [CERT2026] (duplicate of line 23) | C_1d ≤ 1.463071582607559* | 300-cell step function, registry copy @ `50520b9` | **The printed value does not follow from the certificate, by 3.3·10⁻¹⁶.** R(f) = 1.46307158260755932746… is slightly *above* 1.463071582607559. This isn't a new finding: line 23 of the same page already says this, after the [T2026] replay, and reprints the bound as 1.4630715826075594, which I confirm. Line 19 looks like a superseded copy of that row left behind by a merge |
+| line 19, [CERT2026] (duplicate of line 23) | C_1d ≤ 1.463071582607559* | 300-cell step function, registry copy @ `50520b9` | **The printed value does not follow from the certificate, by 3.3·10⁻¹⁶.** R(f) = 1.46307158260755932746… is slightly *above* 1.463071582607559. This isn't a new finding: line 23 of the same page already says this, after the [T2026] replay, and reprints the bound as 1.4630715826075594, which I confirm. **Which of lines 19 and 23 should stay is an open maintainer question, not a settled leftover.** Upstream, the replay pull requests [#232](https://github.com/teorth/optimizationproblems/pull/232) and [#243](https://github.com/teorth/optimizationproblems/pull/243) were merged minutes after the maintainer posted a hold on asterisk removals; the replayer then asked on [#243](https://github.com/teorth/optimizationproblems/pull/243) which row should go, and no answer was visible when the audit was written (AUDIT.md §6.2). This replay settles only the arithmetic |
 
 What "confirmed" means: the published data defines a real step function f on
 [−1/4, 1/4], and I recomputed max_t |f∗f| / (∫f)² exactly, with no rounding, and
@@ -44,8 +44,12 @@ STEPS2026 README. I derived it again here and did not take it from either.
 
 ## What the checker does
 
-`check_c1d.py` runs on the standard library, plus optional python-flint for
-check B.
+`check_c1d.py` runs on the standard library plus python-flint, which is
+required for check B. If python-flint cannot be imported, the checker stops
+with exit status 2 and says why; it never skips check B. (Until
+`replay/package` it skipped check B silently in that case, still printing
+"integrity: OK". Under `python3 -I` that happens whenever python-flint was
+installed with `pip --user`, because `-I` ignores the user site directory.)
 
 1. It checks each input file's SHA-256 against the value recorded on the
    constant page (all three match), then parses the file **as data only**:
@@ -91,8 +95,11 @@ python3 -I verification/1d/check_c1d.py --selftest
 python3 -I verification/1d/check_c1d.py --data /some/empty/dir
 ```
 
-Output from my run is in [`run_output.txt`](run_output.txt). The full run took
-18.8 s on one core of an Intel Xeon @ 2.30 GHz (Python 3.13.18,
+The first line of the output must read `python-flint 0.9.0` (or another
+installed version). The output of the re-run on branch `replay/package` is in
+[`run_output.txt`](run_output.txt); the original run of 3 November 2026 is in
+the git history of this file, with the same numbers. The full run takes about
+20 s on one core of an Intel Xeon @ 2.30 GHz (Python 3.13.18,
 python-flint 0.9.0). Check C accounts for almost all of that. The exact ratio
 itself takes well under a second.
 
@@ -126,10 +133,23 @@ asterisk is for a maintainer to decide.
 ## Side observations, not acted on
 
 - `constants/1d.md` carries line 19 (asterisked 1.463071582607559*) and line 23
-  (1.4630715826075594, replayed) for the same CERT2026 certificate. Its
-  "Additional comments" section is also duplicated, and the second copy has
-  `vert` typos where `\rvert` was meant. Both look like merge artifacts.
-  Following the instructions for this task, I did not edit the page.
+  (1.4630715826075594, replayed) for the same CERT2026 certificate. Which one
+  stays is an open maintainer question on upstream
+  [#243](https://github.com/teorth/optimizationproblems/pull/243) (see the
+  verdict table), and this replay does not decide it. The page's "Additional
+  comments" section is also duplicated, and the second copy has `vert` typos
+  where `\rvert` was meant. Following the instructions for this task, I did
+  not edit the page.
 - The README table still shows 1.4630715826075594 as the best upper bound,
-  without the asterisked improvements. The "Recent progress" section lists
-  them.
+  without the asterisked improvements. The "Recent progress" section lists two
+  of them, STEPS2026 and SCIEL2026, but not AER2026.
+
+## Corrections made on branch `replay/package` (4 November 2026)
+
+- `check_c1d.py` now requires python-flint and stops with exit status 2 without
+  it, instead of skipping check B silently (AUDIT.md §2). Mutation tests 1d-7
+  and 1d-8 in `audit/mutation_tests.py` check this.
+- The duplicate CERT2026 row is described as an open maintainer question on
+  upstream #243, not as a settled merge leftover (AUDIT.md §5, item 2).
+- "The 'Recent progress' section lists them" was inaccurate: it lists
+  STEPS2026 and SCIEL2026 but not AER2026 (AUDIT.md §5, item 7).

@@ -10,17 +10,43 @@ L = max_{δ≥1} [4πΘ(δ) − ln δ − ln(1+ln δ)], where
 
 | Row of `constants/16a.md` | Claimed | Result |
 | --- | --- | --- |
-| line 38, lower bound (maximusrufus certificate) | L ≥ 2.1562247706* | **Confirmed** (see the caveat on the definition below). The trial function's value is L_trial = 2.15622477064423579… (Arb, 128 bit), which exceeds 2.1562247706 by 4.42·10⁻¹¹. A second, independent float64 + `fsum` enclosure gives 2.1562247706442 ± 4.6·10⁻¹⁴, which agrees |
+| line 38, lower bound (maximusrufus certificate) | L ≥ 2.1562247706* | **Confirmed for the constant as the page's "Equivalently" sentence and the source [BDZ2013] define it. Under the literal reading of the page's first sentence the bound would be false** (see the caveat below). The trial function's value is L_trial = 2.15622477064423579… (Arb, 128 bit), which exceeds 2.1562247706 by 4.42·10⁻¹¹. A second, independent float64 + `fsum` enclosure gives 2.1562247706442 ± 4.6·10⁻¹⁴, which agrees |
 | line 37, [Pat2026] (calibration only, not asterisked) | L ≥ 2.156224 | Reproduced: 2.15622475379391…, with δ = 3.931809…, matching the page's "δ(u) ≈ 3.93181" and "2.1562247…" |
 | line 30, upper bound 2.1562256466* | — | **Not checked.** It needs a rigorous tail bound for an infinite lattice sum and a branch-and-bound over δ ∈ [1, ∞), including an asymptotic regime. This is a separate and larger job |
 
-**Caveat on the definition.** The first sentence of the page says the
-inequality is required only for u "with sufficiently large frequency ratio
-δ(u)". Read literally, that would make L a limit as δ → ∞, and a trial
-function with δ ≈ 3.93 would then say nothing. The page's "Equivalently"
-sentence instead defines L as a maximum over all δ ≥ 1. The upper bound, the
-earlier rows ([BDZ2013]'s maximiser δ* ≈ 3.93, [Pat2026]) and the certificate
-all use that reading, and I use it too. Every zero-mean u has δ(u) ≥ 1 anyway.
+**Caveat on the definition: under the literal reading of the page's first
+sentence, this bound would be false.** The page defines L twice, and the two
+definitions give different constants. Write F(δ) = 4πΘ(δ) − ln δ − ln(1 + ln δ).
+
+- **The first sentence, read literally.** It requires the inequality only for
+  u "with sufficiently large frequency ratio δ(u)", that is, only for
+  δ(u) ≥ δ₀ with δ₀ as large as one likes. The best constant is then governed
+  by the limit of F(δ) as δ → ∞, which is (β+π)/π ≈ 1.82283, the source's
+  L_∞ (AUDIT.md §3.4). Every L > 1.82283 would be admissible, so there would
+  be no smallest constant and the infimum would be 1.82283. **Under this
+  reading the claimed lower bound 2.1562247706\* would be false**, and so
+  would [Pat2026]'s 2.156224. Even with a fixed threshold δ₀ = 5, the
+  supremum of F over δ ≥ δ₀ is numerically about 2.1547, below the claim.
+- **The "Equivalently" sentence.** It defines L as the maximum of F over all
+  δ ≥ 1. Every zero-mean u has δ(u) ≥ 1, because |k|⁴ ≥ |k|² on ℤ²∖{0}, so
+  this is the inequality for every zero-mean u. Under this reading the bound
+  holds, and that is what this checker verifies.
+
+The source takes the second reading. [BDZ2013] (arXiv 1012.2061v1, supplied by
+the fork owner; the 2013 journal version was not seen) states the inequality
+in Theorem 3.8 "for all 2π × 2π-periodic functions u with zero mean", and
+defines L := max_{δ≥1} {4πΘ(δ) − (log δ + log(1 + log δ))} in (3.20). The
+phrase "with sufficiently large frequency ratio" is not in the source. The
+page's other rows, the upper-bound certificate (a branch-and-bound over
+δ ∈ [1, ∞)) and BDZ2013's maximiser δ* ≈ 3.93 all presuppose the second
+reading as well. So the bound stands for the constant as the source defines
+it, and the page's first sentence needs correcting. Which reading the
+maintainer intends is for the maintainer to say; this replay has not asked
+(see `SUBMISSION_NOTES.md`).
+
+An earlier version of this README said that under the literal reading a trial
+function with δ ≈ 3.93 "would then say nothing". That understated the problem
+(AUDIT.md §5, item 1): under that reading the bound is false.
 
 ## The reduction
 
@@ -44,7 +70,8 @@ S₀²/(πS₁) and ln δ grow like 2 ln M.
 
 ## What the checker does
 
-`check_c16_lower.py` uses numpy and python-flint.
+`check_c16_lower.py` uses numpy and python-flint; without either it stops
+with an import error (it never skips a check).
 
 1. **r₂ table.** The checker counts r₂(n) for all n ≤ 1.6·10⁷ directly from
    the lattice. It then checks the table two ways: the total must equal the
@@ -84,7 +111,9 @@ repository HEAD at the time, `0c57070`. The check does not actually need the
 JSON: R and μ are stated on the page. The run took 27 s in total (two
 trial functions), using about 400 MB of memory, on Python 3.13.18,
 numpy 2.5.3 and python-flint 0.9.0. The log is in
-[`run_output.txt`](run_output.txt).
+[`run_output.txt`](run_output.txt); it is the re-run on branch
+`replay/package` (the original run of 3 November 2026 is in the git history
+of this file, and the numbers are identical).
 
 ## Assumptions
 
@@ -102,3 +131,13 @@ I read the constant page and the certificate repository's README. I did not
 open `verify_c16_lower.py`, `certify_c16_lower.py` or the upper-bound scripts.
 The checker was written by an AI agent (Claude) working for the owner of this
 fork, and is not a human review.
+
+## Corrections made on branch `replay/package` (4 November 2026)
+
+- The caveat on the definition now says plainly that the bound would be false
+  under the literal reading of the page's first sentence, and cites the source's
+  definition (AUDIT.md §5, item 1).
+- The docstring of `check_c16_lower.py` described method B's error bound
+  incorrectly ("at most 4 correctly rounded operations … < 6u"); it now
+  matches the code and this README (AUDIT.md §5, item 8). The code was
+  already right.
