@@ -17,11 +17,14 @@ delta_u = S2/S1, hence
 
 The three sums are enclosed by two independent methods:
   A. Arb ball arithmetic (python-flint), one ball operation per term;
-  B. IEEE binary64 terms from exact integers (at most 4 correctly rounded
-     operations each, so relative error <= 4u(1+4u), u = 2^-53), summed by
-     math.fsum, which returns the correctly rounded exact sum of its float
-     inputs (one more relative error u).  Each sum is a sum of positive terms,
-     so the total relative error is <= 5u(1+5u) < 6u.
+  B. IEEE binary64 terms from exact integers (k = 2 or 3 correctly rounded
+     operations each, some of them in a denominator, so a term's relative
+     error is at most (1+u)^k/(1-u)^k - 1, u = 2^-53), summed by math.fsum,
+     which returns the correctly rounded exact sum of its float inputs (one
+     more factor 1 +- u).  Each sum is a sum of positive terms, so its
+     relative error is at most (1+u)^(k+1)/(1-u)^k - 1, which is at most
+     (1+u)^4/(1-u)^3 - 1 ~ 7.8e-16.  The bound is computed exactly with
+     Fraction and rounded up (see sums_float).
 The final formula is evaluated in Arb from either set of enclosures.
 r2(n) is counted directly from the lattice and cross-checked against the
 Gauss circle count and Jacobi's formula r2(n) = 4(d1(n) - d3(n)).
