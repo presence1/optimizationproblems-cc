@@ -8,6 +8,18 @@ applies to it as to the work it audits.
 The `verify/*` branches were not modified. Everything here is in this file and in
 [`audit/`](audit/) on branch `audit/review`.
 
+> **Status on branch `replay/package` (4 November 2026).** The audit below is
+> kept as written. Only this note and the appendix "Status of the findings on
+> `replay/package`" at the end have been added. The checker weaknesses of §4
+> and the statements flagged in §5 have since been fixed on `replay/package`,
+> in a further Claude session; that is not a human review either. One
+> statement in this audit turned out to be inaccurate. §2 says the checkers
+> other than `check_c1d.py` "fail loudly without their libraries", but
+> `check_c1c.py` also skipped its FLINT check silently. A run without
+> python-flint showed this, and it is now fixed. The scripts in `audit/` were
+> adapted to run against `replay/package`. The logs of the original audit run
+> stay in `audit/logs/`; the re-run logs are in `audit/logs/package/`.
+
 | Branch | Tip audited | Adds |
 | --- | --- | --- |
 | `verify/1d` | `04247b2` | `verification/1d/` (checker, README, `fetch.sh`, run log), `VERIFY_LOG.md` |
@@ -710,3 +722,37 @@ commit. Send upstream only Markdown changes:
 Requirements: Python 3.13, numpy, python-flint and mpmath, installed where
 `python3 -I` can import them; see §2. Network access is needed only for
 `fetch_all.sh`.
+
+---
+
+## Appendix: status of the findings on `replay/package`
+
+Added on 4 November 2026. Commits are on branch `replay/package`. Logs are in
+`audit/logs/package/`.
+
+| Finding | Where above | Status | Commit |
+| --- | --- | --- | --- |
+| Cla2026: the page comparisons (trace/det, 20+2√66, 1042+2√261207) are printed but not enforced (mutation 49a-4) | §4; §5 item 9 | **Fixed.** 12 page comparisons, exact where the page is exact, all enforced: the matrices as printed, closed forms, points per period, printed digits | `5b7d868` |
+| Syl2026: the row-80 closed form 1127+√925536 is printed but not enforced | §4; §5 item 9 | **Fixed.** Two more unenforced comparisons were found and fixed in the same checker, the gadget counts and "the extra sets avoid H". 13 page comparisons in all, including the "first step" stated in row 79 | `5b7d868` |
+| IRSI2026: the page's polynomials and closed forms are not compared | (not flagged) | **Added.** Polynomials, closed forms, ρ to 4 decimals and printed digits are enforced | `5b7d868` |
+| The recorded 1c minimiser is printed but not enforced (mutation 1c-8) | §4; §5 item 6 | **Fixed.** k = 21264 must be the unique minimiser; 1c-8 now expects failure | `4f286bf` |
+| `check_c1d.py` skips check B silently without python-flint | §2 | **Fixed.** Exit status 2 with an explanation, also for `--selftest` | `4f286bf` |
+| `check_c1c.py` skips check B silently without python-flint | §2 says otherwise | **Fixed** in the same way | `4f286bf` |
+| `glue()` hides duplicates, so part (i) of the lemma is untested | §3.5; §5 item 5 | **Fixed.** The self-test now checks injectivity too | `5b7d868` |
+| IRSI data pinned only by tag; no hash for v1.0 | §5 item 10 | **Fixed.** The README fetches by commit, and the checker pins the v1.0 bytes (`c30a74fe…715b`) | `5b7d868`, `0ad2bf1` |
+| Stale method-B docstring in `check_c16_lower.py` | §5 item 8 | **Fixed** | `bbb90c7` |
+| 16a README understates the literal reading ("would say nothing") | §5 item 1 | **Fixed.** It now says that under the literal reading the bound would be false, and cites [BDZ2013] Theorem 3.8 | `0ad2bf1` |
+| 1d duplicate row called a merge leftover | §5 item 2 | **Fixed.** It is now described as an open maintainer question on #243 | `0ad2bf1` |
+| "15 bounds confirmed" | §5 item 3 | `VERIFY_LOG.md` states the count: 13 confirmed, 12 of them asterisked | `0ad2bf1` |
+| "the seven smaller certificates were all finite exhaustive checks" | §5 item 4 | **Fixed.** Row 79 rests on the lemma alone | `0ad2bf1` |
+| "tested it by brute force"; "losing 2 points" quoted as the page's wording | §5 item 5 | **Fixed** | `0ad2bf1` |
+| "The 'Recent progress' section lists them" | §5 item 7 | **Fixed.** It lists STEPS2026 and SCIEL2026, not AER2026 | `0ad2bf1` |
+| `VERIFY_LOG.md` does not mention #292 or #235 | §5 item 11 | **Fixed.** Both are mentioned, also in the 1c and 49a READMEs | `0ad2bf1` |
+| Independence sections | §5 item 12 | Accurate as they were. `VERIFY_LOG.md` now also states that all of the work was done by Claude agents and none of it has had a human review | `0ad2bf1` |
+| Mutation suite | §4 | Extended from 38 to 52 tests (new: 1d-7, 1d-8, 1c-9, 1c-10, 70a-6, 16a-5, 49a-16 to 49a-23). Against `replay/package`: **52 of 52 behave as a correct checker must**, 49a-4 and 1c-8 included. Against the original checkers: 39 of 52; the 13 that fail are exactly the tests of the fixes (1d-7, 1d-8, 1c-8 to 1c-10, 49a-4, 49a-16 to 49a-22). The audit's own suite, run unchanged against the original checkers, reproduces §4: 37 of 38 | `83a44c2`, `26699fc` |
+
+All five checkers were re-run on `replay/package` with the results unchanged:
+the same exact values, fractions and enclosures as in §1–§3. The four
+independent scripts in `audit/` reproduce their logs exactly, apart from
+timings.
+
