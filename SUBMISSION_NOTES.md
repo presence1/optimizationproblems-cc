@@ -13,8 +13,8 @@ were not re-checked, because this work did not touch upstream at all.
   (`AUDIT.md`, `audit/`), the checker fixes the audit called for, and re-run
   logs in `audit/logs/package/`.
   - **Pinned commit: `c16fe56894c5c725faa9acb7c2743db31d25c304`.** The
-    upstream notes link to it. Later commits on this branch (this file) do
-    not change any checker, README or log.
+    upstream notes link to it. Later commits on this branch add only this
+    file and `NEXT_STEPS.md`; they do not change any checker, README or log.
   - The upstream links only work if this fork is public and that commit stays
     reachable. Do not delete or force-push `replay/package`. `AUDIT.md` §6.3
     suggests a separate public repository, ideally archived on Zenodo, as
