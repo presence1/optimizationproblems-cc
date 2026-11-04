@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+"""Independent check of the [IRSI2026] lower bounds on C_49 (rows 74-76 of
+constants/49a.md): 1.5617847*, 1.5621220*, 1.5647730*.
+
+Each certificate is one Sperner 3-sunflower-free base family B on 20 points
+(sets as 20-bit masks, bit i = point i) with ports u = 18, v = 19; the chain
+of XOR-glued copies (lemma proved in README.md) adds 18 points per copy, so
+C_49 >= rho^(1/18), rho the Perron root of the port-count matrix.
+
+Checked here, from the certificate's set list only: distinctness, Sperner
+(all pairs), exhaustive 3-sunflower search (all pairs, bitset query for a
+third member C with C n (A u B) = A n B), layer sizes, port counts against
+the matrix on the page, rho and the bound.  The search routine is validated
+against brute force in check_c49_syl2026.py.
+
+Usage: python3 -I check_c49_irsi2026.py --data DIR
+"""
+
+import argparse
+import hashlib
+import json
+import os
+import sys
+import time
+
+import numpy as np
+
+sys.dont_write_bytecode = True  # do not leave __pycache__ next to the scripts
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # own helper modules
+from check_c49_syl2026 import sunflower_free_exhaustive  # noqa: E402
+
+CERTS = [
+    # file, sha256 (None: not recorded on the page), claim, page matrix rows
+    # in the page's convention [[#(v in, u out), #(v in, u in)],
+    #                           [#(v out, u out), #(v out, u in)]]
+    ("v10.json", None, "1.5617847", [[1884, 1360], [1081, 1802]], "row 74, tag v1.0"),
+    ("v11_s17.json", "c12d0dd62500a97484cb4f72743803ea7b54e74272e2b474cbabeac7b256fc7b",
+     "1.5621220", [[1802, 1360], [1080, 1908]], "row 75, tag v1.1"),
+    ("v12.json", "7472112ced9d98da8cf7b6a3d586b93ea66750e39989e7a6d6d5f52ffeb4e82e",
+     "1.5647730", [[1993, 1360], [1080, 1908]], "row 76, tag v1.2"),
+]
+PAGE_LAYERS = {"v11_s17.json": {7: 2, 10: 360, 11: 1108, 12: 3600, 13: 1080},
+               "v12.json": {7: 2, 10: 551, 11: 1108, 12: 3600, 13: 1080}}
+
+
+def sperner_numpy(fam):
+    a = np.array(fam, dtype=np.int64)
+    for A in fam:
+        # number of members B with A subset of B (including A itself)
+        if int(np.count_nonzero((a & A) == A)) != 1:
+            return False
+    return True
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--data", required=True)
+    args = ap.parse_args()
+    from flint import arb, ctx
+    ctx.prec = 200
+    ok_all = True
+    for fname, sha, claim, M, label in CERTS:
+        path = os.path.join(args.data, fname)
+        raw = open(path, "rb").read()
+        dig = hashlib.sha256(raw).hexdigest()
+        print("== %s (%s): sha256 %s %s" % (fname, label, dig,
+              "(page records none)" if sha is None else
+              ("matches page" if dig == sha else "MISMATCH")))
+        ok = sha is None or dig == sha
+        d = json.loads(raw.decode("utf-8"), parse_float=str)
+        word = d["word"]
+        assert len(word) == 1 and word[0]["base"] == "B"
+        u, v = word[0]["u"], word[0]["v"]
+        B = d["bases"]["B"]
+        n, fam = B["n"], B["sets"]
+        assert all(type(S) is int and 0 < S < (1 << n) for S in fam)
+        distinct = len(set(fam)) == len(fam)
+        layers = {}
+        for S in fam:
+            layers[bin(S).count("1")] = layers.get(bin(S).count("1"), 0) + 1
+        print("   %d sets on n = %d points, ports u = %d, v = %d; distinct: %s; layers %s"
+              % (len(fam), n, u, v, distinct, dict(sorted(layers.items()))))
+        if fname in PAGE_LAYERS:
+            print("   layer sizes match the page: %s" % (layers == PAGE_LAYERS[fname]))
+            ok &= layers == PAGE_LAYERS[fname]
+        t0 = time.perf_counter()
+        sp = sperner_numpy(fam)
+        t1 = time.perf_counter()
+        wit = sunflower_free_exhaustive(fam, n)
+        t2 = time.perf_counter()
+        print("   Sperner: %s [%.0fs]; exhaustive sunflower search over %d pairs: %s [%.0fs]" % (
+            sp, t1 - t0, len(fam) * (len(fam) - 1) // 2,
+            "none found" if wit is None else "FOUND %s" % (wit[:2],), t2 - t1))
+        ok &= distinct and sp and wit is None and n == 20
+        N = {(a, b): 0 for a in (0, 1) for b in (0, 1)}   # (u-status, v-status)
+        for S in fam:
+            N[((S >> u) & 1, (S >> v) & 1)] += 1
+        mine = [[N[(0, 1)], N[(1, 1)]], [N[(0, 0)], N[(1, 0)]]]
+        print("   port matrix %s; equals the page's %s: %s" % (mine, M, mine == M))
+        ok &= mine == M
+        tr = N[(0, 1)] + N[(1, 0)]
+        det = N[(0, 1)] * N[(1, 0)] - N[(0, 0)] * N[(1, 1)]
+        rho = (arb(tr) + arb(tr * tr - 4 * det).sqrt()) / 2
+        bound = rho ** (arb(1) / (n - 2))
+        c = bool(arb(int(claim.replace(".", ""))) / 10**7 < bound)
+        print("   x^2 - %dx + %d, rho = %s, rho^(1/%d) = %s; > %s: %s" % (
+            tr, det, rho.str(15), n - 2, bound.str(18), claim, c))
+        ok &= c
+        ok_all &= ok
+        print("   -> %s" % ("CONFIRMED (given the XOR-gluing lemma)" if ok else "NOT CONFIRMED"))
+    print("RESULT: %s" % ("all three rows CONFIRMED" if ok_all else "NOT ALL CONFIRMED"))
+    return 0 if ok_all else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

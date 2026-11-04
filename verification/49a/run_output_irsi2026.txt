@@ -1,0 +1,23 @@
+# python3 -I verification/49a/check_c49_irsi2026.py --data DIR
+== v10.json (row 74, tag v1.0): sha256 c30a74fed64616c5c6980fae91f94ae5899fed6a4cb338b537480ee9517d715b (page records none)
+   6127 sets on n = 20 points, ports u = 18, v = 19; distinct: True; layers {7: 2, 10: 360, 11: 1072, 12: 3613, 13: 1080}
+   Sperner: True [0s]; exhaustive sunflower search over 18767001 pairs: none found [18s]
+   port matrix [[1884, 1360], [1081, 1802]]; equals the page's [[1884, 1360], [1081, 1802]]: True
+   x^2 - 3686x + 1924808, rho = [3056.19454334414 +/- 1.49e-12], rho^(1/18) = [1.56178470895053728 +/- 3.28e-19]; > 1.5617847: True
+   -> CONFIRMED (given the XOR-gluing lemma)
+== v11_s17.json (row 75, tag v1.1): sha256 c12d0dd62500a97484cb4f72743803ea7b54e74272e2b474cbabeac7b256fc7b matches page
+   6150 sets on n = 20 points, ports u = 18, v = 19; distinct: True; layers {7: 2, 10: 360, 11: 1108, 12: 3600, 13: 1080}
+   layer sizes match the page: True
+   Sperner: True [0s]; exhaustive sunflower search over 18908175 pairs: none found [18s]
+   port matrix [[1802, 1360], [1080, 1908]]; equals the page's [[1802, 1360], [1080, 1908]]: True
+   x^2 - 3710x + 1969416, rho = [3068.09892424320 +/- 3.75e-12], rho^(1/18) = [1.56212205600681534 +/- 4.05e-18]; > 1.5621220: True
+   -> CONFIRMED (given the XOR-gluing lemma)
+== v12.json (row 76, tag v1.2): sha256 7472112ced9d98da8cf7b6a3d586b93ea66750e39989e7a6d6d5f52ffeb4e82e matches page
+   6341 sets on n = 20 points, ports u = 18, v = 19; distinct: True; layers {7: 2, 10: 551, 11: 1108, 12: 3600, 13: 1080}
+   layer sizes match the page: True
+   Sperner: True [0s]; exhaustive sunflower search over 20100970 pairs: none found [22s]
+   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True
+   x^2 - 3901x + 2333844, rho = [3163.18555281243 +/- 4.56e-12], rho^(1/18) = [1.56477309608283130 +/- 7.90e-19]; > 1.5647730: True
+   -> CONFIRMED (given the XOR-gluing lemma)
+RESULT: all three rows CONFIRMED
+# environment: Linux 6.18.44-fc-v230; Intel Xeon @ 2.30GHz; run 2026-11-03
