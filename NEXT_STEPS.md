@@ -43,8 +43,9 @@ your decision. You can stop at any step.
 
 | Where | What it is |
 | --- | --- |
-| Branch `replay/package` | All the evidence: the programs, their output logs, the audit, and these notes. It stays in your fork and is never submitted upstream. The upstream text links to its commit `c16fe56`. |
-| Branch `replay/upstream-notes` | The small Markdown change you would propose upstream: four files, `constants/1d.md`, `16a.md`, `49a.md` and `70a.md`. |
+| Branch `replay/package` | All the evidence: the programs, their output logs, the audit, and these notes. It stays in your fork and is never submitted upstream. **Commit `c16fe56`** on this branch holds the code and logs; the links inside the page edits point to it. |
+| Branch `replay/upstream-notes` | The small Markdown change you would propose upstream: four files, `constants/1d.md`, `16a.md`, `49a.md` and `70a.md`. **Commit `d79b144`** is that change, and is what your pull request will contain. |
+| `DRAFT_ISSUE_16A.md`, `DRAFT_PULL_REQUEST.md` | Drafts of the text for Steps 8 and 9, written from your Step 7 answers. |
 | `SUBMISSION_NOTES.md` | Checklists of what your pull request and your 16a question must say, and a list of things you must not claim. |
 | `AUDIT.md` | The audit. Its §7 is a plain-language summary; the appendix at the end lists what was fixed afterwards. |
 | `VERIFY_LOG.md` | The overall results table. |
@@ -243,7 +244,9 @@ every number in the text appears in the logs needs care, not mathematics.
    | 49a, row 80 | 1.5678015201… | same | `rho^(1/17) = [1.5678015201687483405 ...` |
 
 3. Click the link in each of the four new reference entries. Each must open a
-   folder on GitHub at commit `c16fe56`.
+   folder on GitHub at commit `c16fe56`, which holds the code and logs. The
+   comparison page itself shows a different commit, `d79b144`: that is the
+   commit containing the page edits. Both are correct.
 4. Read the AI-use note on each page and make sure you are comfortable with
    it. It says the replay was done by Claude Opus 5.5 agents, audited by a
    second Claude session, revised after the audit, and not reviewed by a
@@ -344,7 +347,9 @@ Then open a new issue at <https://github.com/teorth/optimizationproblems/issues/
 - A factual title, for example "C_16 (16a): which reading of the definition
   is intended?".
 - Write the text yourself, following the checklist "Checklist: issue asking
-  which reading of the 16a definition is intended" in `SUBMISSION_NOTES.md`.
+  which reading of the 16a definition is intended" in `SUBMISSION_NOTES.md`,
+  or start from the draft `DRAFT_ISSUE_16A.md`. Read every line of the draft,
+  and change anything you are not sure is true.
 
 **Done when** the issue is posted. Note its number for Step 9.
 
@@ -359,10 +364,12 @@ Then open a new issue at <https://github.com/teorth/optimizationproblems/issues/
 3. The "Files changed" tab must show only the four files.
 4. Give it a factual title, for example "Record independent replays of six
    asterisked rows (asterisks kept)".
-5. Write the description yourself. Go through "Checklist: what the
-   pull-request description must state" in `SUBMISSION_NOTES.md` box by box,
-   add your statement from Step 7, and mention the 16a issue by its number
-   (write "see #" followed by the number GitHub gave the issue).
+5. Write the description yourself, or start from the draft
+   `DRAFT_PULL_REQUEST.md`. Check it against "Checklist: what the
+   pull-request description must state" in `SUBMISSION_NOTES.md` box by box.
+   Make sure your Step 7 statement is in it, and mention the 16a issue by its
+   number (write "#" followed by the number GitHub gave the issue). Read
+   every line of a draft before posting it.
 6. If GitHub says the branch has conflicts, don't resolve them by hand unless
    you know git well. Ask for help.
 7. Before clicking **Create pull request**, re-read "Do not claim" in
