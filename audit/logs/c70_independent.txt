@@ -1,0 +1,22 @@
+== Part A: Steiner + zonotope formula (Monte Carlo), Szasz + AM-GM
+  n=2 r=0.3: MC |P+rB| = 2.44594 +/- 0.00103; Steiner+zonotope 2.44618 (z = -0.23); a wrong normalisation gives 1.84150 (z = +588.7)
+  n=2 r=1.0: MC |P+rB| = 6.77241 +/- 0.00324; Steiner+zonotope 6.76324 (z = +2.83); a wrong normalisation gives 5.11902 (z = +509.6)
+  n=3 r=0.3: MC |P+rB| = 9.55047 +/- 0.00865; Steiner+zonotope 9.57222 (z = -2.51); a wrong normalisation gives 6.34966 (z = +370.1)
+  n=3 r=1.0: MC |P+rB| = 27.75724 +/- 0.02386; Steiner+zonotope 27.71453 (z = +1.79); a wrong normalisation gives 16.53751 (z = +470.2)
+  16 further independent MC runs (r = 0.7, n = 2, 3): z-scores mean -0.32, sd 0.81, max |z| 1.31
+  Szasz+AM-GM: min of V_j(uK)/(C(n,j) a^j) over 300 random unimodular integer u (exact Gram determinants) = 1; over 300 well-conditioned real u (QR) = 0.999999999999999; must be >= 1; equality at u = I: True
+== Part B: third enclosure (stdlib decimal + Robbins), literal vs closed form
+  n=1000 k=368: literal 1.1951249588248458920727589259, closed form 1.1951249588248458920727589259, |diff| = 1.0e-59
+  n=10000 k=3678: literal 1.2010340860139520187690331504, closed form 1.2010340860139520187690331504, |diff| = 1.0e-59
+  R(10^12, 367879441172) in [1.2019433684431505669948027797355241378286, 1.2019433684431505669948027797355241381785]
+  width 3.50e-37; claim 1.20194336 < lower end: True (margin 8.443e-09)
+  control: claim 1.2019433685 is rejected: True
+  control: claim 1.20194336847 is rejected: True
+  (info) k = 367879441170: R in [1.2019433684431505669947, 1.2019433684431505669947]
+  (info) k = 367879441174: R in [1.2019433684431505669948, 1.2019433684431505669948]
+  (info) k = 300000000000: R in [1.1979310222626425157728, 1.1979310222626425157728]
+  (info) k = 450000000000: R in [1.1968154428760335308155, 1.1968154428760335308155]
+== Part C: side statements on the page
+  n=2: sqrt(1/2 + 1/sqrt(pi)) = 1.0315956492; grid max of the n=2 ratio^2 = 1.0315956492 (= 1.0315956492)
+  exp(1/(2e)) = 1.2019433684703144671942 > 1.20194336847: True
+RESULT: ALL CHECKS PASSED

@@ -1,0 +1,49 @@
+ROOT/audit_logs_final/c16_readings.txt:RESULT: ALL CHECKS PASSED
+ROOT/audit_logs_final/c1_independent.txt:RESULT: ALL CHECKS PASSED
+ROOT/audit_logs_final/c49_independent.txt:RESULT: ALL CHECKS PASSED
+ROOT/audit_logs_final/c70_independent.txt:RESULT: ALL CHECKS PASSED
+ROOT/audit_logs_final/mutation_tests.txt:checker integrity (hashes, A == B, check C, recorded fractions): PROBLEM
+ROOT/audit_logs_final/mutation_tests.txt:checker integrity (hashes, A == B, check C, recorded fractions): PROBLEM
+ROOT/audit_logs_final/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM
+ROOT/audit_logs_final/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM
+ROOT/audit_logs_final/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM
+ROOT/audit_logs_final/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions): OK
+ROOT/audit_logs_final/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions): PROBLEM
+ROOT/audit_logs_final/mutation_tests.txt:checker integrity (hashes, shape, A == B, check C, fractions): OK
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:RESULT: NOT ALL CONFIRMED
+ROOT/audit_logs_final/mutation_tests.txt:SUMMARY: 37 of 38 tests behaved as a correct checker must
+ROOT/audit_logs_final/repro_16a.txt:RESULT: CONFIRMED: C_16 >= 2.1562247706
+ROOT/audit_logs_final/repro_1c.txt:selftest passed
+ROOT/audit_logs_final/repro_1c.txt:checker integrity (hashes, shape, A == B, check C, fractions): OK
+ROOT/audit_logs_final/repro_1d.txt:selftest passed
+ROOT/audit_logs_final/repro_1d.txt:checker integrity (hashes, A == B, check C, recorded fractions): OK
+ROOT/audit_logs_final/repro_49a.txt:selftest passed
+ROOT/audit_logs_final/repro_49a.txt:RESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)
+ROOT/audit_logs_final/repro_49a.txt:RESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)
+ROOT/audit_logs_final/repro_49a.txt:RESULT: all three rows CONFIRMED
+ROOT/audit_logs_final/repro_70a.txt:selftest passed
+ROOT/audit_logs_final/repro_70a.txt:RESULT: CONFIRMED: C_70 > 1.20194336 (given the criterion)
+exit=0 elapsed=752s

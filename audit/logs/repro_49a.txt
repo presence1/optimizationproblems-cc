@@ -1,0 +1,53 @@
+selftest: 327 random gluings of Sperner sunflower-free families; failures by rule: {'xor': 0, 'same-keep': 0, 'same-drop': 276} (control 'same-drop' is expected to fail)
+selftest passed
+F: 75 sets on 10 points {'stars': 5, 'k23': 10, 'chair_complements': 60}, set sizes [4, 6]
+   Sperner: True; 3-sunflowers among all 67525 triples: 0
+   port counts (N00, N01, N10, N11) over all ordered port pairs: [(11, 20, 20, 24)]
+H: 121 sets on 11 points {'orbits': [55, 55, 11]}, set sizes [5, 7]
+   Sperner: True; 3-sunflowers among all 287980 triples: 0
+   port counts (N00, N01, N10, N11) over all ordered port pairs: [(15, 31, 31, 44)]
+port counts match the page's rows (20,24),(11,20) and (31,44),(15,31): True
+F chain: T = [[20, 11], [24, 20]], x^2 - 40x + 136, rho = (40 + sqrt(1056))/2 = 20 + 2 sqrt(66): True
+   rho^(1/8) = [1.5664286622500366604 +/- 1.04e-20]
+   -> C_49 >= 1.5664286 (row 77): True
+F,H alternating: T_F T_H = [[1104, 641], [1624, 980]], x^2 - 2084x + 40936; page's matrix rows (980,1624),(641,1104) has the same trace/det: True
+   rho = (2084 + sqrt(4179312))/2 = 1042 + 2 sqrt(261207): True
+   rho^(1/17) = [1.5666969787543153309 +/- 2.33e-20]
+   -> C_49 >= 1.5666969 (row 78): True
+RESULT: CONFIRMED (given the XOR-gluing chain lemma, proved in README)
+bitset sunflower search agrees with brute force on F, H and 400 random uniform families (279 containing a sunflower)
+H at point 0: (avoid, contain) = (46, 75)
+row 79: gadget G: 250659 sets on 28 points, (avoid, contain root) = (98308, 152351); page: 250659, 98308 / 152351: True
+        unit (62 points) port counts {(0, 0): 148811965456, (0, 1): 279351870092, (1, 0): 279351870092, (1, 1): 378843386627}; equal to the page: True
+        rho = [516789080663.4923032289432 +/- 3.80e-14] (= N01 + sqrt(N11 N00): True); rho^(1/60) = [1.5675517557581882198 +/- 2.33e-20]
+        -> C_49 >= 1.5675517: True
+B.txt sha256 340cef5e71124ed624425abf81e9621839406cbf44b3fd242594d8edcb7d37af matches
+Bprime.txt sha256 2a72385704b8203269cda4f4b0dfdabc74d5adb8f4a2bc1dac1f570cb96b5cec matches
+row 80: my rebuild of B has 4349 sets; equals data/B.txt (4349 sets): True
+        data/Bprime.txt: 4364 sets = B + 15 extra; extras avoid all H-points: True
+        B' Sperner: True [1s]; exhaustive sunflower search over all 9520066 pairs: none found [11s]
+        B' port counts at (0, 1): {(0, 0): 622, (0, 1): 1127, (1, 0): 1127, (1, 1): 1488}; page rows (1127,1488),(622,1127): True
+        rho = [2089.0478158594821112 +/- 1.99e-17] = 1127 + sqrt(925536): True; rho^(1/17) = [1.5678015201687483405 +/- 2.98e-20]
+        -> C_49 >= 1.5678015: True
+RESULT: CONFIRMED rows 79 and 80 (given the XOR-gluing lemma)
+== v10.json (row 74, tag v1.0): sha256 c30a74fed64616c5c6980fae91f94ae5899fed6a4cb338b537480ee9517d715b (page records none)
+   6127 sets on n = 20 points, ports u = 18, v = 19; distinct: True; layers {7: 2, 10: 360, 11: 1072, 12: 3613, 13: 1080}
+   Sperner: True [0s]; exhaustive sunflower search over 18767001 pairs: none found [28s]
+   port matrix [[1884, 1360], [1081, 1802]]; equals the page's [[1884, 1360], [1081, 1802]]: True
+   x^2 - 3686x + 1924808, rho = [3056.19454334414 +/- 1.49e-12], rho^(1/18) = [1.56178470895053728 +/- 3.28e-19]; > 1.5617847: True
+   -> CONFIRMED (given the XOR-gluing lemma)
+== v11_s17.json (row 75, tag v1.1): sha256 c12d0dd62500a97484cb4f72743803ea7b54e74272e2b474cbabeac7b256fc7b matches page
+   6150 sets on n = 20 points, ports u = 18, v = 19; distinct: True; layers {7: 2, 10: 360, 11: 1108, 12: 3600, 13: 1080}
+   layer sizes match the page: True
+   Sperner: True [0s]; exhaustive sunflower search over 18908175 pairs: none found [26s]
+   port matrix [[1802, 1360], [1080, 1908]]; equals the page's [[1802, 1360], [1080, 1908]]: True
+   x^2 - 3710x + 1969416, rho = [3068.09892424320 +/- 3.75e-12], rho^(1/18) = [1.56212205600681534 +/- 4.05e-18]; > 1.5621220: True
+   -> CONFIRMED (given the XOR-gluing lemma)
+== v12.json (row 76, tag v1.2): sha256 7472112ced9d98da8cf7b6a3d586b93ea66750e39989e7a6d6d5f52ffeb4e82e matches page
+   6341 sets on n = 20 points, ports u = 18, v = 19; distinct: True; layers {7: 2, 10: 551, 11: 1108, 12: 3600, 13: 1080}
+   layer sizes match the page: True
+   Sperner: True [0s]; exhaustive sunflower search over 20100970 pairs: none found [29s]
+   port matrix [[1993, 1360], [1080, 1908]]; equals the page's [[1993, 1360], [1080, 1908]]: True
+   x^2 - 3901x + 2333844, rho = [3163.18555281243 +/- 4.56e-12], rho^(1/18) = [1.56477309608283130 +/- 7.90e-19]; > 1.5647730: True
+   -> CONFIRMED (given the XOR-gluing lemma)
+RESULT: all three rows CONFIRMED
