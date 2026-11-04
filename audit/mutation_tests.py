@@ -675,7 +675,9 @@ def main():
     print("| --- | --- | --- | --- | --- |")
     for r in results:
         verdict = "yes" if r["ok"] else "**NO**"
-        if r.get("note"):
+        if r.get("na"):
+            verdict += " (%s)" % r["na"]
+        elif r.get("note") and r["ok"]:   # a note explains a correct behaviour
             verdict += " (%s)" % r["note"]
         exp = r["expect"] + (" (exit %d)" % r["exit_expected"] if r.get("exit_expected") else "")
         print("| %s | %s | %s | %s | %s |" % (r["id"], r["what"].replace("|", "\\|"), exp, r["code"], verdict))
